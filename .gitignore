@@ -2,4 +2,7 @@
 .RData
 .Rproj.user
 *.html
+*.pdf
+*.pptx
+*.odp
 */*

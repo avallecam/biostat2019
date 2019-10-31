@@ -17,39 +17,56 @@ output:
 options(htmltools.dir.version = FALSE)
 ```
 
-# Contenido
+# Temario
 
-* Introduction a R
+1. __(breve) Introduction a R__
 
-* Variables
+  * Conceptos clave
 
-* Prueba de Hipótesis
+2. __Variables:__ 
 
-* Regresión lineal y logística
+  * Concepto y clasificación
+  * Explorar distribuciones
+  * __Prueba de Hipótesis:__ limitantes y alternativas
 
-* Comparación múltiple
+5. __Regresión lineal y logística:__ 
 
-* Aplicaciones en microarrays
+  * Relación con PH
+  * __Comparación múltiple:__ corrección del valor p y FDR
+  * Aplicación en _microarrays_
 
 ---
 
 # Metodología
 
-- estructura:
+- Teórico y __práctico__
+
+--
+
+  * Definiciones
+  * Responder a _¿y cómo lo hago en R?_
+
+--
+
+- Estructura:
   
-  1. preguntas introductorias
+  1. Evaluación
   
-  2. teoría
+  2. Teoría
   
-  3. tiempo para práctica
+  3. Práctica
   
-  4. resolución
+  4. Resolución
   
-  5. evaluación rápida
-  
+  5. Evaluación
+
+--
+
+- Contenido disponible en __https://github.com/avallecam/biostat2019__
 
 ---
-class: inverse, center, middle
+
+class: center, middle
 
 # ¡Pregunta 1!
 
@@ -59,6 +76,14 @@ class: inverse, center, middle
 class: inverse, center, middle
 
 # (breve) introducción a R
+
+---
+
+class: center, middle
+
+__Ir a__ 
+
+__`01-biostat2019-slides.pdf`__
 
 ---
 class: inverse, center, middle
@@ -75,26 +100,6 @@ class: inverse, center, middle
 - mostrar cómo hacer una tabla 1 descriptiva lista para publicación
 - ejercicio: identificar y graficar/tabular
 
----
-class: inverse, center, middle
-
-# Estadística Inferencial
-
----
-
-# Mapa mental
-
-- mostrar mapa mental del contenido
-- repetir nuevamente el contenido pero enfatiza las preguntas y problemas asociados a su resolución
-
----
-class: inverse, center, middle
-
-# Prueba de Hipótesis
-
----
-
-# Prueba de Hipótesis
 
 - Enfatizar en los supuestos
 - Probabilidades, distribución normal, definición del estadístico z, valor p, 
@@ -102,6 +107,17 @@ class: inverse, center, middle
 - distribución T student
 - Dos poblaciones
 - crítica: NHST dicotomiza nuestro panorama!
+
+---
+class: center, middle
+
+# Variables categóricas
+
+---
+
+# Prueba de Hipótesis
+
+
 
 ---
 class: inverse, center, middle
