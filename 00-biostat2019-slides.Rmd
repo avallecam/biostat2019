@@ -42,6 +42,7 @@ options(htmltools.dir.version = FALSE)
 aidsdb <- read_dta("data-raw/aidsdb.dta") %>% as_factor() %>% 
   mutate_if(.predicate = is.factor,.funs = fct_relevel,... = "No")
 espir <- read_dta("data-raw/espirometria.dta") %>% as_factor()
+multpv <- read_rds("data-raw/createpval.rds")
 ```
 
 # Temario
@@ -851,15 +852,176 @@ class: inverse, center, middle
 
 # Problema
 
+- En inglés: _multiple hypothesis testing_
+- Cuando monitoreamos un gran número de resultados experimentales (p.e.: experimentos ómicos), esperamos observar descubrimientos que ocurren al azar.
+- Los métodos desarrollados para ajustar o reinterpretar los valores p son llamados _métodos de corrección por múltiples comparaciones_.
+
+
+```{r, echo=FALSE, fig.cap="", out.width = '75%',fig.align='center'}
+knitr::include_graphics("notrack/nmeth.2900-F1.jpg")
+```
 
 ---
 
-# Aplicación: Microarreglos
+# Método Benjamini Hochberg
+
+- __proceso algorítmico__
+  - ordenar ascendentemente valores p
+  - rankear valores p
+  - el mayor valor p tiene el mismo valor de p ajustado
+  - el siguiente es el menor entre 
+    * el p ajustado previo, o
+    * la siguiente solución
+    
+    $$p_{adjusted} = p_{value} * \left(\frac{N_{p_{value}}}{rank_{p_{value}}}\right)$$
+
+```{r}
+tibble(p=seq(0.01,0.91,0.1),
+       r=1:10) %>% 
+  mutate(p.adjust=p.adjust(p = p,method = "BH"))
+```
+
+---
+
+# Ejemplo: método BH
+
+```{r,fig.height=6,fig.width=6}
+multpv %>% 
+  ggplot(aes(p.value#,fill=oracle
+             )) + 
+  geom_histogram(binwidth=.05) +
+  facet_wrap(~ type, scale="free_y", nrow=2) +
+  xlab("P-values")
+```
+
+---
+
+# Ejemplo: método BH
+
+```{r}
+multpv %>% 
+  group_by(type) %>% 
+  mutate(p.adjust=p.adjust(p = p.value,method = "BH"),
+         p.adjust_pass=if_else(p.adjust<0.05,"TRUE","FALSE")) %>% 
+  ungroup() %>% 
+  ggplot(aes(p.value,fill=p.adjust_pass)) + 
+  geom_histogram(binwidth=.05) +
+  facet_wrap(~ type, scale="free_y", nrow=2) +
+  labs(x="P-values",fill="BH")
+```
+
+
+---
+
+# Método Storey (q-values)
+
+```{r, echo=FALSE, fig.cap="", out.width = '75%',fig.align='center'}
+knitr::include_graphics("notrack/nmeth.2900-F3.jpg")
+```
+
+---
+
+# Aplicación: Microarray
+
+```{r}
+cleaned_data <- read_rds("data-raw/microarraydata.rds")
+
+plot_expression_data <- function(expression_data) {
+  ggplot(expression_data, aes(rate, expression, color = nutrient)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE) +
+    facet_wrap(~name + systematic_name, scales = "free_y")
+}
+
+# visualization -----------------------------------------------------------
+
+cleaned_data %>%
+  filter(BP == "leucine biosynthesis") %>%
+  plot_expression_data()
+
+cleaned_data %>%
+  filter(BP == "cell wall organization and biogenesis") %>%
+  plot_expression_data()
+
+# single regression -------------------------------------------------------
+
+LEU1_leucine <- cleaned_data %>%
+  filter(name == "LEU1", nutrient == "Leucine")
+
+ggplot(LEU1_leucine, aes(rate, expression)) +
+  geom_point()
+
+mod <- lm(expression ~ rate, LEU1_leucine)
+summary(mod)
+
+tidy(mod)
+
+# to all combination of gene and nutrient ---------------------------------
+
+cleaned_data %>% count(nutrient)
+
+#reducimos la base para reducir el tiempo de ejecución
+linear_models <- cleaned_data %>%
+  filter(nutrient=="Ammonia") %>% 
+  group_by(name, systematic_name, nutrient) %>%
+  nest() %>% 
+  mutate(model = map(data, ~ lm(expression ~ rate, data = .x)),
+         tidym = map(model,tidy))
+
+slope_terms <- linear_models %>% 
+  unnest(cols = c(tidym)) %>% 
+  ungroup() %>% 
+  filter(term=="rate" & !is.na(p.value)) 
+
+slope_terms %>% 
+  ggplot(aes(p.value)) +
+  geom_histogram(binwidth = .05) +
+  facet_wrap(~nutrient)
+
+slope_terms_adj <- slope_terms %>% 
+  mutate(q.value = qvalue(p.value)$qvalues,
+         q.value_pass=if_else(q.value < .01,"TRUE","FALSE")) 
+
+slope_terms_adj %>% 
+  ggplot(aes(p.value,fill=q.value_pass)) +
+  geom_histogram(binwidth = .05) +
+  facet_wrap(~nutrient)
+
+slope_terms_adj %>% 
+  filter(q.value_pass=="TRUE") %>% 
+  arrange(q.value)
+```
 
 
 ---
 
 # Práctica 5
+
+- explorar la documentación del paquete `qvalue` [link](https://github.com/StoreyLab/qvalue)
+
+```{r,eval=FALSE}
+library(qvalue)
+
+#ejemplo 1
+q <- qvalue(p = p)
+summary(q)
+hist(q)
+plot(q)
+
+#ejemplo 2
+data(hedenfalk)
+pvalues <- hedenfalk$p
+qobj <- qvalue(p = pvalues)
+summary(qobj)
+hist(qobj)
+plot(qobj)
+
+#datos microarray
+qmicro <- qvalue(p = slope_terms$p.value)
+summary(qmicro)
+hist(qmicro)
+plot(qmicro)
+```
 
 
 ---
@@ -867,4 +1029,9 @@ class: inverse, center, middle
 # Referencias
 
 - Logan, M. (2011). Biostatistical design and analysis using R: a practical guide. John Wiley & Sons.
-
+- Rstudio Education. (2019). `https://education.rstudio.com/`
+- Akehurst H. (2016) Bioestadística con R.
+- Statistics for Biologist: Points of Significance. Link: `https://www.nature.com/collections/qghhqm/pointsofsignificance`
+- Ding J, et al. (2018). Association of gene polymorphism of SDF1(CXCR12) with susceptibility to HIV-1 infection and AIDS disease progression: A meta-analysis. PLoS One. `https://www.ncbi.nlm.nih.gov/pubmed/29420545`
+- Estrada-Aguirre JA, et al. (2013). Protective effect of CCR5 Delta-32 allele against HIV-1 in Mexican women. Curr HIV Res. `https://www.ncbi.nlm.nih.gov/pubmed/24382026`
+- Robinson D. (2014). Modeling gene expression with broom: a case study in tidy analysis. http://varianceexplained.org/r/tidy-genomics-broom/
