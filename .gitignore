@@ -5,6 +5,13 @@
 *.pdf
 *.pptx
 *.odp
-*/*
+data/*
+data-raw/microarraydata.rds
+notrack/*
+figure/*
+table/*
+libs/*
+biostat2019-share/*
+00-biostat2019-slides_files/*
 *.zip
 00-biostat2019-slides.R
