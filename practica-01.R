@@ -1,8 +1,13 @@
+#' zona de notas
+#' 
 
 # practica 01 -------------------------------------------------------------
 
 hola
 "hola"
+
+a <- 5
+(a <- 5)
 
 # operaciones aritméticas -------------------------------------------------
 
@@ -47,7 +52,12 @@ summary(heights)
 
 # pipe --------------------------------------------------------------------
 
+# este símbolo "%>%" es llamado pipe 
+# usa (Ctrl + Shit + M) para crearlo
 heights
+heights %>% mean()
+
+library(tidyverse) # pipe podrá ser usado al ejecutar esta línea
 heights %>% mean()
 heights %>% mean() %>% log10()
 heights %>% mean() %>% log10() %>% class()
@@ -66,6 +76,9 @@ sd(heights,na.rm = T)
 
 summary(heights)
 
+bw <- "blue"
+hist(heights)
+hist(heights,col = bw)
 
 # subconjuntos ------------------------------------------------------------
 
@@ -77,4 +90,6 @@ y[3:7]
 y[c(1,3,5,6)]
 y[3] <- "hola"
 y
+
+z <- c("hola","mi","nombre","es","_____")
 
