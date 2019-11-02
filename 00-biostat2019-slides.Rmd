@@ -72,22 +72,9 @@ multpv <- read_rds("data-raw/createpval.rds")
 
 --
 
-  * Definiciones
-  * Responder a _¿y cómo lo hago en R?_
-
---
-
-- Estructura:
+  * Definiciones y procedimientos
   
-  1. Evaluación
-  
-  2. Teoría
-  
-  3. Práctica
-  
-  4. Resolución
-  
-  5. Evaluación
+  * Responder a: _¿y cómo lo hago en R?_
 
 --
 
@@ -156,9 +143,33 @@ class: inverse, center, middle
 
 ---
 
+# Variables: Ejemplo
+
+**VEF = Volumen Expiratorio Forzado (mL/s)**
+
+**¿Existe una asociación entre VEF y edad, talla, etc?**
+
+**¿Cómo se ve afectado el VEF en las personas que fuman?**
+
+- base: `espirometria.dta`
+- exposición: `edad`, `talla`
+- desenlace: `vef`
+
+```{r,echo=FALSE}
+knitr::kable(head(espir), format = 'html')
+```
+
+---
+
 # Variables numéricas
 
-```{r,out.width = '50%'}
+```{r,eval=FALSE}
+espir %>% 
+  select(edad,vef,talla) %>% 
+  skim() #<<
+```
+
+```{r,echo=FALSE,out.width = '50%'}
 espir %>% 
   select(edad,vef,talla) %>% 
   skim_to_wide() %>% 
@@ -174,19 +185,21 @@ espir %>%
 
 ```{r,fig.height=4,fig.width=4}
 espir %>% 
-  ggplot(aes(x = talla,y = vef)) +
+  ggplot(aes(x = talla,y = vef)) + #<<
   geom_point() +
   geom_smooth(method = "lm")
 ```
 
 ]
 
+--
+
 .pull-right[
 
 ```{r,fig.height=4,fig.width=4}
 espir %>% 
   select(edad,vef,talla) %>% 
-  correlate() %>% 
+  correlate() %>%  #<<
   rearrange() %>% 
   shave()
 ```
@@ -199,12 +212,17 @@ espir %>%
 
 ```{r}
 espir %>% 
-  tabyl(sexo) %>% 
+  tabyl(sexo) %>%  #<<
   adorn_totals("row") %>% 
   adorn_pct_formatting()
+```
 
+--
+
+
+```{r}
 espir %>% 
-  tabyl(sexo,fumar) %>% 
+  tabyl(sexo,fumar) %>%  #<<
   adorn_totals(c("col")) %>% 
   adorn_percentages() %>% 
   adorn_pct_formatting() %>% 
@@ -219,7 +237,7 @@ espir %>%
 ```{r}
 espir %>% 
   tabyl(sexo,fumar) %>% 
-  chisq.test() %>% 
+  chisq.test() %>%  #<<
   tidy()
 ```
 
@@ -232,18 +250,21 @@ espir %>%
 ```{r,fig.height=4,fig.width=4}
 espir %>% 
   ggplot(aes(x = fumar,y = vef)) +
-  geom_point(aes(color=fumar),position = position_jitter()) +
-  geom_boxplot(alpha=0)
+  geom_point(aes(color=fumar), #<<
+             position = position_jitter()) + 
+  geom_boxplot(alpha=0) #<<
 ```
 
 ]
+
+--
 
 .pull-right[
 
 ```{r,fig.height=4,fig.width=4}
 espir %>% 
   ggplot(aes(x = fumar,y = vef)) +
-  geom_violin(aes(color=fumar))
+  geom_violin(aes(color=fumar)) #<<
 ```
 
 ]
@@ -252,18 +273,34 @@ espir %>%
 
 # Variables numéricas y categóricas: PH
 
-```{r}
+```{r,eval=FALSE}
 espir %>% 
   select(fumar,vef) %>% 
-  group_by(fumar) %>% 
+  group_by(fumar) %>%  #<<
+  skim()
+```
+
+```{r,echo=FALSE}
+espir %>% 
+  select(fumar,vef) %>% 
+  group_by(fumar) %>%  
   skim_to_wide() %>% 
   kable(format = "html") %>% 
   kable_styling(full_width = F,font_size = 15)
 ```
 
-```{r}
-t.test(vef ~ fumar, data = espir,var.equal=FALSE) %>% 
-  tidy()
+--
+
+```{r,eval=FALSE}
+t.test(vef ~ fumar, data = espir, var.equal=FALSE) %>% 
+  tidy() #<<
+```
+
+```{r,echo=FALSE}
+t.test(vef ~ fumar, data = espir, var.equal=FALSE) %>% 
+  tidy() %>% 
+  kable(format = "html",digits = 2) %>% 
+  kable_styling(full_width = F,font_size = 15)
 ```
 
 ---
@@ -283,10 +320,14 @@ espir %>%
   geom_histogram()
 
 #realizar pruebas de hipótesis
+#experimenta y describe qué cambios genera cada uno de los argumentos?
 compareGroups(formula = fumar ~ edad + vef + talla + sexo,
-              data = espir, byrow=T#,method=c(vef=2)
+              data = espir, 
+              byrow=T,
+              method=c(vef=2)
               ) %>% 
-  createTable(show.all = T) #%>% export2xls("table/tab1.xls")
+  createTable(show.all = T) %>% 
+  export2xls("table/tab1.xls")
 ```
 
 ```{r,eval=FALSE,echo=FALSE}
@@ -384,7 +425,7 @@ knitr::include_graphics("notrack/nmeth.3627-F1.jpg")
 
 .pull-right[
 
-```{r, echo=FALSE,fig.height=4,fig.width=3}
+```{r, echo=FALSE,fig.height=6,fig.width=6}
 women %>% ggplot(aes(weight,height)) + geom_point() + geom_smooth(method = "lm")
 ```
 
@@ -396,17 +437,27 @@ $$Y = \beta_0 + \beta_1 X_1 + \epsilon$$
 
 # RLinS: Ejemplo 
 
+.pull-left[
+
+```{r,fig.height=6,fig.width=6}
+espir %>% 
+  ggplot(aes(edad,vef)) +
+  geom_point()
+```
+
+]
+
+--
+
+.pull-right[
+
 - __Evaluación de supuestos:__
 
   + **#1** independencia de observaciones
   
   + **#2** linealidad
 
-```{r,fig.height=3,fig.width=3}
-espir %>% 
-  ggplot(aes(edad,vef)) +
-  geom_point()
-```
+]
 
 
 ---
@@ -417,11 +468,11 @@ espir %>%
 
 .pull-left[
 
-```{r, echo=FALSE, fig.cap="", out.width = '50%'}
+```{r, echo=FALSE, fig.cap="", out.width = '60%',fig.align='center'}
 knitr::include_graphics("notrack/Inkedlss01_LI.jpg")
 ```
 
-```{r, echo=FALSE, fig.cap="", out.width = '50%'}
+```{r, echo=FALSE, fig.cap="", out.width = '60%',fig.align='center'}
 knitr::include_graphics("notrack/Inkedlss02_LI.jpg")
 ```
 
@@ -429,13 +480,38 @@ knitr::include_graphics("notrack/Inkedlss02_LI.jpg")
 
 .pull-right[
 
-```{r, echo=FALSE, fig.cap="", out.width = '50%'}
+```{r, echo=FALSE, fig.cap="", out.width = '60%',fig.align='center'}
 knitr::include_graphics("notrack/Inkedlss02_LI.jpg")
 ```
 
-```{r, echo=FALSE, fig.cap="", out.width = '50%'}
+```{r, echo=FALSE, fig.cap="", out.width = '60%',fig.align='center'}
 knitr::include_graphics("notrack/Inkedlss03_LI.jpg")
 ```
+
+]
+
+---
+
+# RLinS: suma de mínimos cuadrados
+
+.pull-left[
+
+<!--![fuente: `https://youtu.be/nk2CQITm_eo`](notrack/lss.png)-->
+
+```{r, echo=FALSE, fig.cap="", out.width = '90%'}
+knitr::include_graphics("notrack/lss.png")
+```
+
+]
+
+--
+
+.pull-right[
+
+Cálculo de la **sumatoria del cuadrado de los residuales** hacia la media y la recta:
+
+$$ SSE(mean) = \sum (data - mean)^2 $$
+$$ SSE(fit) = \sum (data - fit)^2 $$
 
 ]
 
@@ -472,12 +548,21 @@ $$ R^2 = \frac{Var(mean) - Var(fit)}{Var(mean)}  $$
 
 # RLinS: bondad de ajuste
 
-```{r}
+```{r,eval=FALSE}
+wm1 <- lm(vef ~ edad, data = espir)
+
+wm1 %>% 
+  glance() #<<
+```
+
+```{r,echo=FALSE}
 wm1 <- lm(vef ~ edad, data = espir)
 wm1 %>% glance() %>% dplyr::select(r.squared:df)
 ```
 
 **INTERPRETACIÓN**
+
+--
 
 - **edad** _explica_ el **57%** de la variabilidad de **VEF**
 
@@ -492,7 +577,9 @@ wm1 %>% glance() %>% dplyr::select(r.squared:df)
 wm1 %>% tidy()
 ```
 
-- Interpretación:
+**INTERPRETACIÓN**
+
+--
 
 ```{r, echo=FALSE, fig.cap="", out.width = '90%'}
 knitr::include_graphics("notrack/logan-06.PNG")
@@ -504,7 +591,7 @@ knitr::include_graphics("notrack/logan-06.PNG")
 
 ```{r}
 wm1 %>% tidy()
-wm1 %>% confint_tidy()
+wm1 %>% confint_tidy() #<<
 ```
 
 - $\beta_{edad}$: 
@@ -514,7 +601,7 @@ wm1 %>% confint_tidy()
 
 ---
 
-# RLinS: supuesto **#3** normalidad de residuales
+# RLinS: supuesto **#3** normalidad residuales
 
 .pull-left[
 
@@ -537,24 +624,26 @@ knitr::include_graphics("notrack/nmeth.3854-F2.jpg")
 
 .pull-left[
 
-- **META:** todos los puntos sobre la línea
-
-```{r,fig.height=3,fig.width=3}
-wm1 %>% 
-  augment() %>% 
-  ggplot() +
-  geom_qq(aes(sample=.std.resid)) + 
-  geom_qq_line(aes(sample=.std.resid))
+```{r,fig.height=4,fig.width=4,eval=TRUE, echo=TRUE}
+wm1 %>% augment() %>% 
+  ggplot(aes(.std.resid)) + #<<
+  geom_histogram()
 ```
 
 ]
 
+--
+
 .pull-right[
 
-```{r,fig.height=3,fig.width=3,eval=TRUE, echo=TRUE}
-wm1 %>% augment() %>% 
-  ggplot(aes(.std.resid)) +
-  geom_histogram()
+- **META:** puntos sobre la línea
+
+```{r,fig.height=4,fig.width=4}
+wm1 %>% 
+  augment() %>% #<<
+  ggplot() +
+  geom_qq(aes(sample=.std.resid)) + #<<
+  geom_qq_line(aes(sample=.std.resid))
 ```
 
 ]
@@ -564,7 +653,7 @@ wm1 %>% augment() %>%
 # RLinS: supuesto **#4** homoscedasticidad
 
 
-```{r, echo=FALSE, fig.cap="", out.width = '65%'}
+```{r, echo=FALSE, fig.cap="", out.width = '80%',fig.align='center'}
 knitr::include_graphics("notrack/logan-07.PNG")
 ```
 
@@ -572,7 +661,7 @@ knitr::include_graphics("notrack/logan-07.PNG")
 
 # RLinS: supuesto **#4** homoscedasticidad
 
-```{r, echo=FALSE, fig.cap="", out.width = '65%'}
+```{r, echo=FALSE, fig.cap="", out.width = '80%',fig.align='center'}
 knitr::include_graphics("notrack/nmeth.3854-F1.jpg")
 ```
 
@@ -582,12 +671,12 @@ knitr::include_graphics("notrack/nmeth.3854-F1.jpg")
 
 - **META:** distribución idéntica a ambos lados de la línea
 
-```{r,fig.height=3,fig.width=3,message=FALSE,error=FALSE}
+```{r,fig.height=4,fig.width=4,message=FALSE,error=FALSE}
 wm1 %>% 
   augment() %>% 
   ggplot(aes(.fitted,.std.resid)) +
   geom_point() +
-  geom_smooth() +
+  geom_smooth() + #<<
   geom_hline(yintercept = c(0))
 ```
 
@@ -598,11 +687,11 @@ wm1 %>%
 $$ Y = \beta_0 + \beta_1 X_1 + \epsilon $$
 $$ VEF = 0.60 + 0.22 (edad) + \epsilon $$
 
-```{r,fig.height=3,fig.width=3}
+```{r,fig.height=4,fig.width=4}
 espir %>% 
   ggplot(aes(edad,vef)) +
   geom_point() + 
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm") #<<
 ```
 
 <!-- - ¿qué pasa si borramos `method = "lm"`? -->
@@ -629,7 +718,7 @@ espir %>%
   geom____()
 ```
 
-- identificar coeficientes y R^2^
+- identificar coeficientes y $R^2$
 
 ```{r,eval=FALSE}
 # recordar: y ~ x
@@ -690,6 +779,8 @@ $$Y = \beta_0 + \beta_1 X_1 + \epsilon$$
 
 $$logit(p) = log(odds)  = log\left(\frac{p}{1-p}\right) \\ logit(p) = \beta_0 + \beta_1 X_1 + . . . + \beta_n X_n + \epsilon \enspace ; \enspace y \sim Binomial$$
 
+--
+
 - El valor exponenciado de los coeficientes se pueden interpretar como **Odds Ratio (OR)**
 
 $$Y = \beta_0 + \beta_1 X_1 \\ \begin{cases} Y_{x=1} = log(odds_{x=1}) = \beta_0 + \beta_1(1) \\ Y_{x=0} = log(odds_{x=0}) = \beta_0 + \beta_1(0) \end{cases} \\ Y_{x=1} - Y_{x=0} = \beta_1 \\ log(odds_{x=1}) - log(odds_{x=0}) = \beta_1 \\ log \left(\frac{odds_{x=1}}{odds_{x=0}}\right)  = \beta_1 \\ OR = exp(\beta_1)$$
@@ -719,7 +810,9 @@ Donde:
 - $F$ es la familia de distribución
 - $g(\space)$ es la función de enlace
 
-```{r, echo=FALSE, fig.cap="", out.width = '90%'}
+--
+
+```{r, echo=FALSE, fig.cap="", out.width = '100%'}
 knitr::include_graphics("notrack/logan-05.PNG")
 ```
 
@@ -730,7 +823,7 @@ knitr::include_graphics("notrack/logan-05.PNG")
 
 .pull-left[
 
-```{r, echo=FALSE, fig.cap="", out.width = '75%',fig.align='center'}
+```{r, echo=FALSE, fig.cap="", out.width = '100%',fig.align='center'}
 knitr::include_graphics("notrack/nmeth.3904-F3_A.jpg")
 ```
 
@@ -766,7 +859,8 @@ knitr::kable(head(aidsdb), format = 'html')
 # RlogS: Interpretar variables categóricas 
 
 ```{r}
-wm1 <- glm(aids ~ ccr5, data = aidsdb, family = binomial(link = "logit"))
+wm1 <- glm(aids ~ ccr5, data = aidsdb, 
+           family = binomial(link = "logit")) #<<
 ```
 
 ```{r,echo=FALSE}
@@ -774,9 +868,27 @@ wm1 <- glm(aids ~ ccr5, data = aidsdb, family = binomial(link = "logit"))
 m1 <- avallecam::epi_tidymodel_or(wm1) %>% print()
 ```
 
+**INTERPRETACIÓN**
+
 - $\beta_0$
   - En la población, el **odds** de tener sida dado que **no poseen CCR5** es **`r round(m1$or[1],2)`**,
   - con un intervalo de confianza al 95% de `r round(m1$conf.low[1],2)` a `r round(m1$conf.high[1],2)`.
+
+---
+
+# RlogS: Interpretar variables categóricas 
+
+```{r}
+wm1 <- glm(aids ~ ccr5, data = aidsdb, 
+           family = binomial(link = "logit")) #<<
+```
+
+```{r,echo=FALSE}
+#wm1 %>% glance()
+m1 <- avallecam::epi_tidymodel_or(wm1) %>% print()
+```
+
+**INTERPRETACIÓN**
 
 - $\beta_{CCR2:Yes}$
   - En la población, el **odds** de tener sida dado que **sí poseen CCR5** es
@@ -795,13 +907,16 @@ wm1 %>% augment()
 # RlogS: Interpretar variables contínuas 
 
 ```{r}
-wm1 <- glm(aids ~ loghivrna, data = aidsdb, family = binomial(link = "logit"))
+wm1 <- glm(aids ~ loghivrna, data = aidsdb, 
+           family = binomial(link = "logit"))
 ```
 
 ```{r,echo=FALSE}
 #wm1 %>% glance()
 m1 <- avallecam::epi_tidymodel_or(wm1) %>% print()
 ```
+
+**INTERPRETACIÓN**
 
 - $\beta_{loghivrna}$
   - En la población, por cada incremento en una unidad del **log de RNA viral**,
@@ -827,6 +942,7 @@ wm1 <- glm(_____ ~ _____ + _____, data = _____, family = _____(link = "_____"))
 wm1 %>% g_____
 wm1 %>% t_____
 wm1 %>% c_____
+wm1 %>% a_____
 wm1 %>% avallecam::epi_tidymodel_or()
 ```
 
@@ -850,12 +966,13 @@ class: inverse, center, middle
 
 ---
 
-# Problema
+# Problema: _multiple hypothesis testing_
 
-- En inglés: _multiple hypothesis testing_
-- Cuando monitoreamos un gran número de resultados experimentales (p.e.: experimentos ómicos), esperamos observar descubrimientos que ocurren al azar.
+- Cuando monitoreamos un gran número de resultados experimentales, esperamos observar descubrimientos que ocurren al azar.
+
 - Los métodos desarrollados para ajustar o reinterpretar los valores p son llamados _métodos de corrección por múltiples comparaciones_.
 
+- p.e.: experimentos ómicos:
 
 ```{r, echo=FALSE, fig.cap="", out.width = '75%',fig.align='center'}
 knitr::include_graphics("notrack/nmeth.2900-F1.jpg")
@@ -863,113 +980,240 @@ knitr::include_graphics("notrack/nmeth.2900-F1.jpg")
 
 ---
 
+background-image: url(notrack/statquest-3.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-6.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-7.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-10.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-12.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-13.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
 # Método Benjamini Hochberg
 
-- __proceso algorítmico__
-  - ordenar ascendentemente valores p
-  - rankear valores p
-  - el mayor valor p tiene el mismo valor de p ajustado
-  - el siguiente es el menor entre 
-    * el p ajustado previo, o
-    * la siguiente solución
-    
-    $$p_{adjusted} = p_{value} * \left(\frac{N_{p_{value}}}{rank_{p_{value}}}\right)$$
+__Proceso algoritmico__
+
+1. ordenar ascendentemente y rankear valores p
+2. el mayor valor p tiene el mismo valor de p ajustado
+3. el siguiente es el menor entre: (i) el previo o (ii) la solución:
+
+.pull-left[
+
+$$p_{adjusted} = p_{value} * \left(\frac{N_{p_{value}}}{rank_{p_{value}}}\right)$$
+
+]
+
+--
+
+.pull-right[
 
 ```{r}
-tibble(p=seq(0.01,0.91,0.1),
-       r=1:10) %>% 
-  mutate(p.adjust=p.adjust(p = p,method = "BH"))
+tibble(p=seq(0.01,0.91,0.1),r=1:10) %>% 
+  mutate(p.adjust=p.adjust(p = p,method = "BH")) #<<
 ```
+
+]
+
+---
+
+background-image: url(notrack/statquest-14.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-15.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-16.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
 
 ---
 
 # Ejemplo: método BH
 
-```{r,fig.height=6,fig.width=6}
+```{r,fig.height=5,fig.width=7}
 multpv %>% 
-  ggplot(aes(p.value#,fill=oracle
-             )) + 
+  ggplot(aes(p.value)) + 
   geom_histogram(binwidth=.05) +
-  facet_wrap(~ type, scale="free_y", nrow=2) +
-  xlab("P-values")
+  facet_wrap(~ type, scale="free_y", nrow=2) + #<<
+  labs(x="P-values")
 ```
 
 ---
 
 # Ejemplo: método BH
 
-```{r}
+```{r,fig.height=4,fig.width=8}
 multpv %>% 
-  group_by(type) %>% 
-  mutate(p.adjust=p.adjust(p = p.value,method = "BH"),
+  group_by(type) %>%  #<<
+  mutate(p.adjust=p.adjust(p = p.value,method = "BH"), #<<
          p.adjust_pass=if_else(p.adjust<0.05,"TRUE","FALSE")) %>% 
   ungroup() %>% 
-  ggplot(aes(p.value,fill=p.adjust_pass)) + 
-  geom_histogram(binwidth=.05) +
-  facet_wrap(~ type, scale="free_y", nrow=2) +
-  labs(x="P-values",fill="BH")
-```
-
-
----
-
-# Método Storey (q-values)
-
-```{r, echo=FALSE, fig.cap="", out.width = '75%',fig.align='center'}
-knitr::include_graphics("notrack/nmeth.2900-F3.jpg")
+  ggplot(aes(p.value,fill=p.adjust_pass)) + geom_histogram(binwidth=.05) +
+  facet_wrap(~ type, scale="free_y", nrow=2) +labs(x="P-values",fill="BH")
 ```
 
 ---
 
 # Aplicación: Microarray
 
+- Diseño:
+  * Medición de la expresión en inanición (Brauer, 2008)
+  * Cultivos de _S. cerevisiae_ expuestos a seis concentraciones de nutrientes, suministrado en seis tasas o _rates_ por un quimiostato.
+  * Un _gene expression microarray_ mide qué tanto un gen se expresa en determinada condición.
+
+--
+
 ```{r}
 cleaned_data <- read_rds("data-raw/microarraydata.rds")
+```
 
+.pull-left[
+
+```{r}
+cleaned_data %>% 
+  count(nutrient)
+```
+
+]
+
+.pull-right[
+
+```{r}
+cleaned_data %>% 
+  count(rate)
+```
+
+]
+
+```{r,echo=FALSE}
 plot_expression_data <- function(expression_data) {
   ggplot(expression_data, aes(rate, expression, color = nutrient)) +
     geom_point() +
     geom_smooth(method = "lm", se = FALSE) +
     facet_wrap(~name + systematic_name, scales = "free_y")
 }
+```
 
-# visualization -----------------------------------------------------------
+---
 
+# Microarray: visualización
+
+```{r,fig.height=6,fig.width=9}
 cleaned_data %>%
   filter(BP == "leucine biosynthesis") %>%
   plot_expression_data()
+```
 
+---
+
+# Microarray: visualización
+
+```{r,fig.height=6,fig.width=9}
 cleaned_data %>%
   filter(BP == "cell wall organization and biogenesis") %>%
   plot_expression_data()
+```
 
-# single regression -------------------------------------------------------
+---
 
+# Microarray: Regresión Lineal Simple
+
+```{r,fig.height=4,fig.width=6}
 LEU1_leucine <- cleaned_data %>%
   filter(name == "LEU1", nutrient == "Leucine")
 
 ggplot(LEU1_leucine, aes(rate, expression)) +
   geom_point()
+```
 
+---
+
+# Microarray: Regresión Lineal Simple
+
+```{r}
 mod <- lm(expression ~ rate, LEU1_leucine)
-summary(mod)
-
 tidy(mod)
+```
 
-# to all combination of gene and nutrient ---------------------------------
+---
 
-cleaned_data %>% count(nutrient)
+# Microarray: a todas los pares gen-nutriente
 
+```{r}
 #reducimos la base para reducir el tiempo de ejecución
 linear_models <- cleaned_data %>%
-  filter(nutrient=="Ammonia") %>% 
+  filter(nutrient=="Ammonia") %>% #<<
   group_by(name, systematic_name, nutrient) %>%
-  nest() %>% 
-  mutate(model = map(data, ~ lm(expression ~ rate, data = .x)),
-         tidym = map(model,tidy))
+  nest() %>% #<<
+  mutate(model = map(data, ~ lm(expression ~ rate, data = .x)), #<<
+         tidym = map(model,tidy)) #<<
+```
 
+--
+
+```{r}
+linear_models
+```
+
+
+---
+
+# Microarray: conservamos las pendientes
+
+```{r,fig.height=4,fig.width=6}
 slope_terms <- linear_models %>% 
-  unnest(cols = c(tidym)) %>% 
+  unnest(cols = c(tidym)) %>% #<<
   ungroup() %>% 
   filter(term=="rate" & !is.na(p.value)) 
 
@@ -977,44 +1221,46 @@ slope_terms %>%
   ggplot(aes(p.value)) +
   geom_histogram(binwidth = .05) +
   facet_wrap(~nutrient)
+```
 
+---
+
+# Microarray: corregimos valor p
+
+```{r,fig.height=4,fig.width=6}
 slope_terms_adj <- slope_terms %>% 
-  mutate(q.value = qvalue(p.value)$qvalues,
+  mutate(q.value = qvalue(p.value)$qvalues, #<<
          q.value_pass=if_else(q.value < .01,"TRUE","FALSE")) 
 
 slope_terms_adj %>% 
   ggplot(aes(p.value,fill=q.value_pass)) +
   geom_histogram(binwidth = .05) +
   facet_wrap(~nutrient)
-
-slope_terms_adj %>% 
-  filter(q.value_pass=="TRUE") %>% 
-  arrange(q.value)
 ```
 
+---
+
+# Microarray: Lista de genes de interés
+
+```{r}
+slope_terms_adj %>% 
+  filter(q.value_pass=="TRUE") %>% 
+  arrange(q.value) %>%  #<<
+  select(systematic_name,nutrient,term,estimate,p.value,q.value)
+```
 
 ---
 
 # Práctica 5
 
+- reproducir el proceso para los demás nutrientes
+
+- explorar paquete `limma`
+
 - explorar la documentación del paquete `qvalue` [link](https://github.com/StoreyLab/qvalue)
 
 ```{r,eval=FALSE}
 library(qvalue)
-
-#ejemplo 1
-q <- qvalue(p = p)
-summary(q)
-hist(q)
-plot(q)
-
-#ejemplo 2
-data(hedenfalk)
-pvalues <- hedenfalk$p
-qobj <- qvalue(p = pvalues)
-summary(qobj)
-hist(qobj)
-plot(qobj)
 
 #datos microarray
 qmicro <- qvalue(p = slope_terms$p.value)
@@ -1028,10 +1274,45 @@ plot(qmicro)
 
 # Referencias
 
-- Logan, M. (2011). Biostatistical design and analysis using R: a practical guide. John Wiley & Sons.
-- Rstudio Education. (2019). `https://education.rstudio.com/`
-- Akehurst H. (2016) Bioestadística con R.
-- Statistics for Biologist: Points of Significance. Link: `https://www.nature.com/collections/qghhqm/pointsofsignificance`
-- Ding J, et al. (2018). Association of gene polymorphism of SDF1(CXCR12) with susceptibility to HIV-1 infection and AIDS disease progression: A meta-analysis. PLoS One. `https://www.ncbi.nlm.nih.gov/pubmed/29420545`
-- Estrada-Aguirre JA, et al. (2013). Protective effect of CCR5 Delta-32 allele against HIV-1 in Mexican women. Curr HIV Res. `https://www.ncbi.nlm.nih.gov/pubmed/24382026`
-- Robinson D. (2014). Modeling gene expression with broom: a case study in tidy analysis. http://varianceexplained.org/r/tidy-genomics-broom/
+- Logan M. (2011). Biostatistical design and analysis using R: a practical guide. John Wiley & Sons. [Library Genesis](http://gen.lib.rus.ec/book/index.php?md5=9CF463AE32C405E29FCEDD99440225BE)
+- Akehurst H. (2016) Bioestadística con R. Curso dictado en UPCH.
+- Statistics for Biologist: Points of Significance. [Nature Collection](https://www.nature.com/collections/qghhqm/pointsofsignificance)
+- Ho J, et al. (2019). Moving beyond P values: data analysis with estimation graphics. [Nature Methods](https://www.nature.com/articles/s41592-019-0470-3.epdf?author_access_token=Euy6APITxsYA3huBKOFBvNRgN0jAjWel9jnR3ZoTv0Pr6zJiJ3AA5aH4989gOJS_dajtNr1Wt17D0fh-t4GFcvqwMYN03qb8C33na_UrCUcGrt-Z0J9aPL6TPSbOxIC-pbHWKUDo2XsUOr3hQmlRew%3D%3D)
+- Stamer J. StatQuest. False Discovery Rates, FDR, clearly explained. [YouTube channel](https://www.youtube.com/user/joshstarmer/playlists)
+- Ding J, et al. (2018). Association of gene polymorphism of SDF1(CXCR12) with susceptibility to HIV-1 infection and AIDS disease progression: A meta-analysis. [PLoS One](https://www.ncbi.nlm.nih.gov/pubmed/29420545)
+- Estrada-Aguirre JA, et al. (2013). Protective effect of CCR5 Delta-32 allele against HIV-1 in Mexican women. [Curr HIV Res](https://www.ncbi.nlm.nih.gov/pubmed/24382026)
+- Lindeløv J. (2019) Common statistical tests are linear models (or: how to teach stats) [Github personal webpage](https://lindeloev.github.io/tests-as-linear/)
+- Robinson D. (2014). Modeling gene expression with broom: a case study in tidy analysis. [Variance explained blog](http://varianceexplained.org/r/tidy-genomics-broom/)
+
+---
+
+# Material complementario
+
+- Rstudio Education: [Learn](https://education.rstudio.com/learn/)
+  * beginner, intermediate, expert tracks
+  * transform table [here](https://rstudio-education.github.io/tidyverse-cookbook/transform-tables.html)
+  * tidy explain *_join verbs [here](https://www.garrickadenbuie.com/project/tidyexplain/)
+
+- Rstudio [Cheat sheets](https://rstudio.com/resources/cheatsheets/)
+  * data import
+  * data transformation
+  * data visualization
+
+---
+
+class: center, middle
+
+# ¡Gracias!
+
+## Andree Valle Campos<br/><br/> `r icon::fa('twitter')` `r icon::fa('github')` __`@avallecam`__ <br/><br/> `r icon::fa("inbox")` __avallecam@gmail.com__
+
+.footnote[
+Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+]
+
+---
+
+class: center, middle
+
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/3/39/Naruto_Shiki_Fujin.svg)
+background-size: contain
