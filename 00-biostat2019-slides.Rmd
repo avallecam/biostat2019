@@ -620,7 +620,7 @@ knitr::include_graphics("notrack/nmeth.3854-F2.jpg")
 
 ---
 
-# RLinS: supuesto **#3** normalidad de residuales
+# RLinS: supuesto **#3** normalidad de residual
 
 .pull-left[
 
@@ -1029,8 +1029,6 @@ Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
 ---
 
 # Método Benjamini Hochberg
-
-__Proceso algoritmico__
 
 1. ordenar ascendentemente y rankear valores p
 2. el mayor valor p tiene el mismo valor de p ajustado
