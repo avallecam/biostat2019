@@ -2,7 +2,6 @@
 .RData
 .Rproj.user
 *.html
-*.pdf
 *.pptx
 *.odp
 data/*
@@ -14,4 +13,3 @@ libs/*
 biostat2019-share/*
 00-biostat2019-slides_files/*
 *.zip
-00-biostat2019-slides.R
