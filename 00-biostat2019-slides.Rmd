@@ -78,6 +78,14 @@ multpv <- read_rds("data-raw/createpval.rds")
 
 --
 
+- Material
+
+  * 2 archivos de teoría en PDF
+  
+  * 5 practicas + solucionario 
+
+--
+
 - Contenido disponible en __https://github.com/avallecam/biostat2019__
 
 ---
@@ -185,7 +193,7 @@ espir %>%
 
 ```{r,fig.height=4,fig.width=4}
 espir %>% 
-  ggplot(aes(x = talla,y = vef)) + #<<
+  ggplot(aes(x=talla,y=vef)) + #<<
   geom_point() +
   geom_smooth(method = "lm")
 ```
@@ -249,9 +257,10 @@ espir %>%
 
 ```{r,fig.height=4,fig.width=4}
 espir %>% 
-  ggplot(aes(x = fumar,y = vef)) +
-  geom_point(aes(color=fumar), #<<
-             position = position_jitter()) + 
+  ggplot(aes(x=fumar,y=vef)) +
+  geom_point(
+    aes(color=fumar), #<<
+    position = "jitter") + #<<
   geom_boxplot(alpha=0) #<<
 ```
 
@@ -263,7 +272,7 @@ espir %>%
 
 ```{r,fig.height=4,fig.width=4}
 espir %>% 
-  ggplot(aes(x = fumar,y = vef)) +
+  ggplot(aes(x=fumar,y=vef)) +
   geom_violin(aes(color=fumar)) #<<
 ```
 
@@ -439,9 +448,9 @@ $$Y = \beta_0 + \beta_1 X_1 + \epsilon$$
 
 .pull-left[
 
-```{r,fig.height=6,fig.width=6}
+```{r,fig.height=5.5,fig.width=5.5}
 espir %>% 
-  ggplot(aes(edad,vef)) +
+  ggplot(aes(x=edad,y=vef)) + #<<
   geom_point()
 ```
 
@@ -450,6 +459,36 @@ espir %>%
 --
 
 .pull-right[
+
+- __Pregunta__
+
+  + **¿Existe una relación lineal entre edad y VEF?**
+  
+  + **¿En cuánto incrementa el VEF, por cada incremento en un año de edad?**
+
+]
+
+---
+
+# RLinS: Ejemplo 
+
+.pull-left[
+
+```{r,fig.height=5.5,fig.width=5.5}
+espir %>% 
+  ggplot(aes(x=edad,y=vef)) +
+  geom_point()
+```
+
+]
+
+.pull-right[
+
+- __Pregunta__
+
+  + **¿Existe una relación lineal entre edad y VEF?**
+  
+  + **¿En cuánto incrementa el VEF, por cada incremento en un año de edad?**
 
 - __Evaluación de supuestos:__
 
@@ -477,6 +516,8 @@ knitr::include_graphics("notrack/Inkedlss02_LI.jpg")
 ```
 
 ]
+
+--
 
 .pull-right[
 
@@ -620,12 +661,28 @@ knitr::include_graphics("notrack/nmeth.3854-F2.jpg")
 
 ---
 
-# RLinS: supuesto **#3** normalidad de residual
+# RLinS: supuesto **#3** normalidad residuales
+
+- generación de _dataframe_ con:
+  * `.fitted` : valor predicho de Y para valor de X ( $\hat Y$ )
+  * `.resid` : valor crudo del residual ( $Y - \hat Y$ )
+  * `.std.resid` : valor _estudiantizado_ del residual
+
+```{r,fig.height=4,fig.width=4,eval=TRUE, echo=TRUE}
+wm1 %>% 
+  augment() #<<
+```
+
+
+---
+
+# RLinS: supuesto **#3** normalidad residuales
 
 .pull-left[
 
 ```{r,fig.height=4,fig.width=4,eval=TRUE, echo=TRUE}
-wm1 %>% augment() %>% 
+wm1 %>% 
+  augment() %>% 
   ggplot(aes(.std.resid)) + #<<
   geom_histogram()
 ```
@@ -640,10 +697,12 @@ wm1 %>% augment() %>%
 
 ```{r,fig.height=4,fig.width=4}
 wm1 %>% 
-  augment() %>% #<<
-  ggplot() +
-  geom_qq(aes(sample=.std.resid)) + #<<
-  geom_qq_line(aes(sample=.std.resid))
+  augment() %>% 
+  ggplot(
+    aes(sample=.std.resid) #<<
+    ) + 
+  geom_qq() + #<<
+  geom_qq_line() #<<
 ```
 
 ]
@@ -653,7 +712,7 @@ wm1 %>%
 # RLinS: supuesto **#4** homoscedasticidad
 
 
-```{r, echo=FALSE, fig.cap="", out.width = '80%',fig.align='center'}
+```{r, echo=FALSE, fig.cap="", out.width = '70%',fig.align='center'}
 knitr::include_graphics("notrack/logan-07.PNG")
 ```
 
@@ -671,7 +730,7 @@ knitr::include_graphics("notrack/nmeth.3854-F1.jpg")
 
 - **META:** distribución idéntica a ambos lados de la línea
 
-```{r,fig.height=4,fig.width=4,message=FALSE,error=FALSE}
+```{r,fig.height=4,fig.width=4,message=FALSE,error=FALSE,fig.align='center'}
 wm1 %>% 
   augment() %>% 
   ggplot(aes(.fitted,.std.resid)) +
@@ -687,7 +746,7 @@ wm1 %>%
 $$ Y = \beta_0 + \beta_1 X_1 + \epsilon $$
 $$ VEF = 0.60 + 0.22 (edad) + \epsilon $$
 
-```{r,fig.height=4,fig.width=4}
+```{r,fig.height=4,fig.width=4,fig.align='center'}
 espir %>% 
   ggplot(aes(edad,vef)) +
   geom_point() + 
@@ -710,11 +769,11 @@ espir %>%
 
 # Práctica 3
 
-- ajustar una recta
+- **¿Existe una relación lineal entre talla y VEF?**
 
 ```{r,fig.height=3,fig.width=3,eval=FALSE}
 espir %>% 
-  ggplot(aes(edad,talla)) +
+  ggplot(aes(x = talla,y = vef)) +
   geom____()
 ```
 
@@ -774,18 +833,14 @@ $$Y = \beta_0 + \beta_1 X_1 + \epsilon$$
 
 # RlogS: Ecuación y coeficiente
 
-
 - $p$ posee distribución _binomial_, linealizada $[-\infty,\infty]$ por la función _logit_
 
 $$logit(p) = log(odds)  = log\left(\frac{p}{1-p}\right) \\ logit(p) = \beta_0 + \beta_1 X_1 + . . . + \beta_n X_n + \epsilon \enspace ; \enspace y \sim Binomial$$
 
 --
 
-- El valor exponenciado de los coeficientes se pueden interpretar como **Odds Ratio (OR)**
 
-$$Y = \beta_0 + \beta_1 X_1 \\ \begin{cases} Y_{x=1} = log(odds_{x=1}) = \beta_0 + \beta_1(1) \\ Y_{x=0} = log(odds_{x=0}) = \beta_0 + \beta_1(0) \end{cases} \\ Y_{x=1} - Y_{x=0} = \beta_1 \\ log(odds_{x=1}) - log(odds_{x=0}) = \beta_1 \\ log \left(\frac{odds_{x=1}}{odds_{x=0}}\right)  = \beta_1 \\ OR = exp(\beta_1)$$
-
-```{r,fig.height=3,fig.width=6,eval=FALSE,echo=FALSE}
+```{r,fig.height=4,fig.width=8,eval=TRUE,echo=FALSE,fig.align='center'}
 data_frame(p=seq(0,1,0.01)) %>% 
   mutate(odd=p/(1-p),
          logit=log(odd)) %>% 
@@ -796,6 +851,19 @@ data_frame(p=seq(0,1,0.01)) %>%
   facet_wrap(~key,scales = "free") +
   coord_flip()
 ```
+
+---
+
+# RlogS: Ecuación y coeficiente
+
+
+- $p$ posee distribución _binomial_, linealizada $[-\infty,\infty]$ por la función _logit_
+
+$$logit(p) = log(odds)  = log\left(\frac{p}{1-p}\right) \\ logit(p) = \beta_0 + \beta_1 X_1 + . . . + \beta_n X_n + \epsilon \enspace ; \enspace y \sim Binomial$$
+
+- El valor exponenciado de los coeficientes se pueden interpretar como **Odds Ratio (OR)**
+
+$$Y = \beta_0 + \beta_1 X_1 \\ \begin{cases} Y_{x=1} = log(odds_{x=1}) = \beta_0 + \beta_1(1) \\ Y_{x=0} = log(odds_{x=0}) = \beta_0 + \beta_1(0) \end{cases} \\ Y_{x=1} - Y_{x=0} = \beta_1 \\ log(odds_{x=1}) - log(odds_{x=0}) = \beta_1 \\ log \left(\frac{odds_{x=1}}{odds_{x=0}}\right)  = \beta_1 \\ OR = exp(\beta_1)$$
 
 ---
 
@@ -938,11 +1006,13 @@ wm1 %>% augment()
 
 ```{r,eval=FALSE}
 # recordar: y ~ x
-wm1 <- glm(_____ ~ _____ + _____, data = _____, family = _____(link = "_____"))
+wm1 <- glm(_____ ~ _____, data=_____, family= _____(link="_____"))
+
 wm1 %>% g_____
 wm1 %>% t_____
 wm1 %>% c_____
 wm1 %>% a_____
+
 wm1 %>% avallecam::epi_tidymodel_or()
 ```
 
@@ -1038,13 +1108,92 @@ Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
 
 $$p_{adjusted} = p_{value} * \left(\frac{N_{p_{value}}}{rank_{p_{value}}}\right)$$
 
+```{r,eval=FALSE}
+tibble( #<<
+  p=seq(from = 0.01,
+        to = 0.91,
+        by = 0.1),
+  r=1:10)
+```
+
 ]
 
 --
 
 .pull-right[
 
-```{r}
+```{r,echo=FALSE}
+tibble(p=seq(0.01,0.91,0.1),r=1:10)
+```
+
+]
+
+---
+
+# Método Benjamini Hochberg
+
+1. ordenar ascendentemente y rankear valores p
+2. el mayor valor p tiene el mismo valor de p ajustado
+3. el siguiente es el menor entre: (i) el previo o (ii) la solución:
+
+.pull-left[
+
+$$p_{adjusted} = p_{value} * \left(\frac{N_{p_{value}}}{rank_{p_{value}}}\right)$$
+
+```{r,eval=FALSE}
+tibble(
+  p=seq(from = 0.01,
+        to = 0.91,
+        by = 0.1),
+  r=1:10) %>% 
+  mutate(  #<<
+    p.adjust=  #<<
+      p.adjust(  #<<
+        p = p,  #<<
+        method = "BH")) #<<
+```
+
+]
+
+.pull-right[
+
+```{r,echo=FALSE}
+tibble(p=seq(0.01,0.91,0.1),r=1:10)
+```
+
+]
+
+
+---
+
+# Método Benjamini Hochberg
+
+1. ordenar ascendentemente y rankear valores p
+2. el mayor valor p tiene el mismo valor de p ajustado
+3. el siguiente es el menor entre: (i) el previo o (ii) la solución:
+
+.pull-left[
+
+$$p_{adjusted} = p_{value} * \left(\frac{N_{p_{value}}}{rank_{p_{value}}}\right)$$
+
+```{r,eval=FALSE}
+tibble(
+  p=seq(from = 0.01,
+        to = 0.91,
+        by = 0.1),
+  r=1:10) %>% 
+  mutate(  #<<
+    p.adjust=  #<<
+      p.adjust(  #<<
+        p = p,  #<<
+        method = "BH")) #<<
+```
+
+]
+
+.pull-right[
+
+```{r,echo=FALSE}
 tibble(p=seq(0.01,0.91,0.1),r=1:10) %>% 
   mutate(p.adjust=p.adjust(p = p,method = "BH")) #<<
 ```
@@ -1120,7 +1269,7 @@ cleaned_data <- read_rds("data-raw/microarraydata.rds")
 
 ```{r}
 cleaned_data %>% 
-  count(nutrient)
+  count(nutrient) #<<
 ```
 
 ]
@@ -1129,7 +1278,7 @@ cleaned_data %>%
 
 ```{r}
 cleaned_data %>% 
-  count(rate)
+  count(rate) #<<
 ```
 
 ]
@@ -1149,8 +1298,8 @@ plot_expression_data <- function(expression_data) {
 
 ```{r,fig.height=6,fig.width=9}
 cleaned_data %>%
-  filter(BP == "leucine biosynthesis") %>%
-  plot_expression_data()
+  filter(BP == "leucine biosynthesis") %>% #<<
+  plot_expression_data() #función detallada en: practica-05.R
 ```
 
 ---
@@ -1168,10 +1317,12 @@ cleaned_data %>%
 # Microarray: Regresión Lineal Simple
 
 ```{r,fig.height=4,fig.width=6}
-LEU1_leucine <- cleaned_data %>%
-  filter(name == "LEU1", nutrient == "Leucine")
-
-ggplot(LEU1_leucine, aes(rate, expression)) +
+cleaned_data %>%
+  #elegimos 01 gen y 01 nutriente
+  filter(name == "LEU1", nutrient == "Leucine") %>% 
+  #graficamos la relación Y: expresión ~ X: rate
+  ggplot(aes(rate, expression)) +
+  #empleamos la geometría punto
   geom_point()
 ```
 
@@ -1179,9 +1330,31 @@ ggplot(LEU1_leucine, aes(rate, expression)) +
 
 # Microarray: Regresión Lineal Simple
 
+```{r,fig.height=4,fig.width=6}
+cleaned_data %>%
+  #elegimos 01 gen y 01 nutriente
+  filter(name == "LEU1", nutrient == "Leucine") %>% 
+  #graficamos la relación Y: expresión ~ X: rate
+  ggplot(aes(rate, expression)) +
+  #empleamos la geometría punto
+  geom_point() + geom_smooth(method = "lm")
+```
+
+
+---
+
+# Microarray: Regresión Lineal Simple
+
 ```{r}
-mod <- lm(expression ~ rate, LEU1_leucine)
-tidy(mod)
+cleaned_data %>%
+  #elegimos 01 gen y 01 nutriente
+  filter(name == "LEU1", nutrient == "Leucine") %>% 
+  #ajustamos una regresión lineal
+  #dado que data no es el primer argumento
+  #necesitamos especificarlo en data con "."
+  lm(expression ~ rate, data = .) %>% 
+  #visualizamos tabla con estimados
+  tidy()
 ```
 
 ---
@@ -1189,11 +1362,11 @@ tidy(mod)
 # Microarray: a todas los pares gen-nutriente
 
 ```{r}
-#reducimos la base para reducir el tiempo de ejecución
 linear_models <- cleaned_data %>%
-  filter(nutrient=="Ammonia") %>% #<<
-  group_by(name, systematic_name, nutrient) %>%
-  nest() %>% #<<
+  filter(nutrient=="Ammonia") %>% #filtramos por nutriente #<<
+  group_by(name, systematic_name, nutrient) %>% #agrupamos por gen
+  nest() %>% #anidamos los datos en una columna lista de df #<<
+  # ajustamos un modelo lineal a cada fila -ver paquete purrr::map-
   mutate(model = map(data, ~ lm(expression ~ rate, data = .x)), #<<
          tidym = map(model,tidy)) #<<
 ```
@@ -1209,7 +1382,7 @@ linear_models
 
 # Microarray: conservamos las pendientes
 
-```{r,fig.height=4,fig.width=6}
+```{r,fig.height=4,fig.width=10}
 slope_terms <- linear_models %>% 
   unnest(cols = c(tidym)) %>% #<<
   ungroup() %>% 
@@ -1217,7 +1390,7 @@ slope_terms <- linear_models %>%
 
 slope_terms %>% 
   ggplot(aes(p.value)) +
-  geom_histogram(binwidth = .05) +
+  geom_histogram(binwidth = .01) +
   facet_wrap(~nutrient)
 ```
 
@@ -1225,14 +1398,15 @@ slope_terms %>%
 
 # Microarray: corregimos valor p
 
-```{r,fig.height=4,fig.width=6}
+```{r,fig.height=4,fig.width=10}
 slope_terms_adj <- slope_terms %>% 
   mutate(q.value = qvalue(p.value)$qvalues, #<<
          q.value_pass=if_else(q.value < .01,"TRUE","FALSE")) 
 
 slope_terms_adj %>% 
-  ggplot(aes(p.value,fill=q.value_pass)) +
-  geom_histogram(binwidth = .05) +
+  ggplot(aes(p.value,
+             fill=q.value_pass)) + #<<
+  geom_histogram(binwidth = .01) +
   facet_wrap(~nutrient)
 ```
 

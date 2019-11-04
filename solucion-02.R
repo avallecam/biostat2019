@@ -19,12 +19,12 @@ espir %>% skim_to_wide() %>% writexl::write_xlsx(path = "table/skimtable.xlsx")
 # variables categóricas ---------------------------------------------------
 
 espir %>% 
-  tabyl(____) %>%  #<<
+  tabyl(sexo) %>%  #<<
   adorn_totals("row") %>% 
   adorn_pct_formatting()
 
 espir %>% 
-  tabyl(____,fumar) %>%  #<<
+  tabyl(sexo,fumar) %>%  #<<
   adorn_totals(c("col")) %>% 
   adorn_percentages() %>% 
   adorn_pct_formatting() %>% 
@@ -34,7 +34,7 @@ espir %>%
 # comparación de proporciones ---------------------------------------------
 
 espir %>% 
-  tabyl(____,fumar) %>% 
+  tabyl(sexo,fumar) %>% 
   chisq.test() %>%  #<<
   tidy()
 
@@ -42,24 +42,24 @@ espir %>%
 
 #grafica distribución
 espir %>% 
-  ggplot(aes(x = ____)) +
+  ggplot(aes(x = edad)) +
   geom_histogram()
 
 espir %>% 
-  ggplot(aes(x=____,y=vef)) + #<<
+  ggplot(aes(x=talla,y=vef)) + #<<
   geom_point() +
   geom_smooth(method = "lm")
 
 # correlaciones -----------------------------------------------------------
 
 espir %>% 
-  select(____,____,talla) %>% 
+  select(edad,vef,talla) %>% 
   correlate() %>% 
   stretch() %>% 
   arrange(desc(r))
 
 espir %>% 
-  select(____,____,talla) %>% 
+  select(edad,vef,talla) %>% 
   as.matrix() %>% 
   Hmisc::rcorr() %>% 
   broom::tidy()
@@ -67,31 +67,31 @@ espir %>%
 # variables numericas y  categóricas --------------------------------------
 
 espir %>% 
-  ggplot(aes(x=fumar,y=____)) +
+  ggplot(aes(x=fumar,y=vef)) +
   geom_point(
     aes(color=fumar), #<<
     position = "jitter") + #<<
   geom_boxplot(alpha=0) #<<
 
 espir %>% 
-  ggplot(aes(x=fumar,y=____)) +
+  ggplot(aes(x=fumar,y=vef)) +
   geom_violin(aes(color=fumar)) #<<
 
 espir %>%
-  select(fumar,____) %>%
+  select(fumar,vef) %>%
   group_by(fumar) %>%  #<<
   skim()
 
 # comparar medias entre dos grupos ----------------------------------------
 
-t.test(vef ~ fumar, data = ____, var.equal=FALSE) %>%
+t.test(vef ~ fumar, data = espir, var.equal=FALSE) %>%
   tidy()
 
 # tabla resumen -----------------------------------------------------------
 
 #realizar pruebas de hipótesis
 #experimenta y describe qué cambios genera cada uno de los argumentos?
-compareGroups(formula = fumar ~ ____ + ____ + ____,
+compareGroups(formula = fumar ~ edad + vef + sexo,
               data = espir, 
               byrow=T,method=c(vef=2)
               ) %>% 
