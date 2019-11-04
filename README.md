@@ -2,11 +2,11 @@
 
 ## Temario
 
-1. __(breve) Introduction a R__
+- __(breve) Introduction a R__
 
   * Conceptos clave
 
-2. __Variables:__ 
+- __Variables:__ 
 
   * Concepto y clasificación
 
@@ -14,7 +14,7 @@
 
   * __Prueba de Hipótesis:__ limitantes y alternativas
 
-5. __Modelos lineales:__ 
+- __Modelos lineales:__ 
 
   * __Regresión lineal y logística__
 
