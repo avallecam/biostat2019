@@ -3,11 +3,11 @@
 
 # practica 01 -------------------------------------------------------------
 
-hola
+hola #error
 "hola"
 
-a <- 5
-(a <- 5)
+a <- 5 #no imprime resultado
+(a <- 5) #sí imprime resultado
 
 # operaciones aritméticas -------------------------------------------------
 
@@ -32,13 +32,12 @@ x^2 +2*x + 4
 1:10
 seq(1,10)
 rep(1,5)
-plot(women)
-hist(women)
 
 a <- 1
 b <- "uno"
 c <- TRUE
 
+# class te dice qué tipo de objeto es 
 class(a)
 class(b)
 class(c)
@@ -55,30 +54,28 @@ summary(heights)
 # este símbolo "%>%" es llamado pipe 
 # usa (Ctrl + Shit + M) para crearlo
 heights
-heights %>% mean()
+mean(heights)
+heights %>% mean() #error si no tienes invocado el paquete tidyverse
 
 library(tidyverse) # pipe podrá ser usado al ejecutar esta línea
 heights %>% mean()
 heights %>% mean() %>% log10()
 heights %>% mean() %>% log10() %>% class()
+class(heights)
 
 # funciones y argumentos ---------------------------------------------------
 
-heights <- c(NA, 153.5, 152.5, 162.0, 153.9, 156.2, 152.6, 151.9, 154.3)
+alturas <- c(NA, 153.5, 152.5, 162.0, 153.9, 156.2, 152.6, 151.9, 154.3)
 
-heights
+alturas
 
-mean(heights)
-sd(heights)
+mean(alturas) #error
+sd(alturas) #error
 
-mean(heights,na.rm = T)
-sd(heights,na.rm = T)
+mean(alturas,na.rm = TRUE)
+sd(alturas,na.rm = T)
 
-summary(heights)
-
-bw <- "blue"
-hist(heights)
-hist(heights,col = bw)
+summary(alturas)
 
 # subconjuntos ------------------------------------------------------------
 
@@ -93,3 +90,16 @@ y
 
 z <- c("hola","mi","nombre","es","_____")
 
+# gráficos básicos -------------------------------------------------------
+
+bw <- "blue"
+hist(heights)
+hist(heights,col = bw)
+
+# dataframes --------------------------------------------------------------
+
+women #dataframe que posee más de un vector
+women$height #accedes al vector de altura
+
+plot(women) #genera scatterplot automático
+hist(women$height) #genera un histogram de un vector específico

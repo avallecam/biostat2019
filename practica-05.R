@@ -55,30 +55,45 @@ cleaned_data %>%
 
 # single regression -------------------------------------------------------
 
-LEU1_leucine <- cleaned_data %>%
-  filter(name == "LEU1", nutrient == "Leucine")
-
-ggplot(LEU1_leucine, aes(rate, expression)) +
+cleaned_data %>%
+  #elegimos 01 gen y 01 nutriente
+  filter(name == "LEU1", nutrient == "Leucine") %>% 
+  #graficamos la relación Y: expresión ~ X: rate
+  ggplot(aes(rate, expression)) +
+  #empleamos la geometría punto
   geom_point()
 
-mod <- lm(expression ~ rate, LEU1_leucine)
-summary(mod)
+cleaned_data %>%
+  #elegimos 01 gen y 01 nutriente
+  filter(name == "LEU1", nutrient == "Leucine") %>% 
+  #graficamos la relación Y: expresión ~ X: rate
+  ggplot(aes(rate, expression)) +
+  #empleamos la geometría punto
+  geom_point() + geom_smooth(method = "lm")
 
-tidy(mod)
+  cleaned_data %>%
+  #elegimos 01 gen y 01 nutriente
+  filter(name == "LEU1", nutrient == "Leucine") %>% 
+  #ajustamos una regresión lineal
+  #dado que data no es el primer argumento
+  #necesitamos especificarlo en data con "."
+  lm(expression ~ rate, data = .) %>% 
+  #visualizamos tabla con estimados
+  tidy()
+
 
 # to all combination of gene and nutrient ---------------------------------
 
 cleaned_data %>% count(nutrient)
 
-#reducimos la base para reducir el tiempo de ejecución
 linear_models <- cleaned_data %>%
-  
-  filter(nutrient=="Ammonia") %>% 
-  
-  group_by(name, systematic_name, nutrient) %>%
-  nest() %>% 
-  mutate(model = map(data, ~ lm(expression ~ rate, data = .x)),
-         tidym = map(model,tidy))
+  filter(nutrient=="Ammonia") %>% #filtramos por nutriente #<<
+  group_by(name, systematic_name, nutrient) %>% #agrupamos por gen
+  nest() %>% #anidamos los datos en una columna lista de df #<<
+  # ajustamos un modelo lineal a cada fila -ver paquete purrr::map-
+  mutate(model = map(data, ~ lm(expression ~ rate, data = .x)), #<<
+         tidym = map(model,tidy)) #<<
+
 
 # conserva pendientes -----------------------------------------------------
 
