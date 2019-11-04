@@ -9,14 +9,19 @@
 2. __Variables:__ 
 
   * Concepto y clasificación
+
   * Explorar distribuciones
+
   * __Prueba de Hipótesis:__ limitantes y alternativas
 
 5. __Modelos lineales:__ 
 
   * __Regresión lineal y logística__
+
   * Relación con PH
+
   * __Comparación múltiple:__ corrección del valor p y FDR
+
   * Aplicación en _microarrays_
 
 ## Metodología
