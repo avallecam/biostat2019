@@ -9,6 +9,7 @@ library(tidyr)
 library(ggplot2)
 library(broom)
 library(qvalue)
+library(purrr)
 
 # sección para generar la base y guardarla --------------------------------
 # fuente
@@ -71,7 +72,7 @@ cleaned_data %>%
   #empleamos la geometría punto
   geom_point() + geom_smooth(method = "lm")
 
-  cleaned_data %>%
+cleaned_data %>%
   #elegimos 01 gen y 01 nutriente
   filter(name == "LEU1", nutrient == "Leucine") %>% 
   #ajustamos una regresión lineal

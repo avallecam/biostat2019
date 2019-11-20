@@ -1,5 +1,11 @@
 # Estadística Inferencial en R
 
+-------
+
+## Slides aquí [parte 01](https://github.com/avallecam/biostat2019/blob/master/00-biostat2019-slides.pdf) y [parte 02](https://github.com/avallecam/biostat2019/blob/master/01-biostat2019-slides.pdf)
+
+-------
+
 ## Temario
 
 - __(breve) Introduction a R__

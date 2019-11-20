@@ -9,6 +9,7 @@ library(tidyr)
 library(ggplot2)
 library(broom)
 library(qvalue)
+library(purrr)
 
 # sección para generar la base y guardarla --------------------------------
 # fuente
