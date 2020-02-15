@@ -5,7 +5,7 @@
 *.odp
 data/*
 data-raw/microarraydata.rds
-notrack/*
+notrack/*.pdf
 figure/*
 table/*
 biostat2019-share/*
