@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Estadística Inferencial en R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Andree Valle Campos  @avallecam" />
+    <meta name="date" content="2019-11-04" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Estadística Inferencial en R
+## Día 1 del curso:<br/>Análisis de RNA-seq en R
+### Andree Valle Campos<br/> <span class="citation">@avallecam</span>
+### CDC - Perú<br/>Centro Nacional de Epidemiología,<br/>Prevención y Control de Enfermedades
+### 2019-11-04
+
+---
+
+
+
+
+# Temario
+
+1. __(breve) Introduction a R__
+
+  * Conceptos clave
+
+2. __Variables:__ 
+
+  * Concepto y clasificación
+  * Explorar distribuciones
+  * __Prueba de Hipótesis:__ limitantes y alternativas
+
+5. __Modelos lineales:__ 
+
+  * __Regresión lineal y logística__
+  * Relación con PH
+  * __Comparación múltiple:__ corrección del valor p y FDR
+  * Aplicación en _microarrays_
+
+---
+
+# Metodología
+
+- Teórico y __práctico__
+
+--
+
+  * Definiciones y procedimientos
+  
+  * Responder a: _¿y cómo lo hago en R?_
+
+--
+
+- Material
+
+  * 2 archivos de teoría en PDF
+  
+  * 5 practicas + solucionario 
+
+--
+
+- Contenido disponible en __https://github.com/avallecam/biostat2019__
+
+---
+
+class: center, middle
+
+# ¡Pregunta 1!
+
+## Del 1 al 5, ¿Qué tan familiarizado estás con cada tema?
+
+---
+class: inverse, center, middle
+
+# (breve) introducción a R
+
+---
+
+class: center, middle
+
+__Ir a__ 
+
+__`01-biostat2019-slides.pdf`__
+
+
+---
+
+# Práctica 1
+
+
+```r
+#aritmética
+2+2
+x &lt;- 2
+x+2
+
+#funciones
+seq(1,10)
+rep(1,5)
+
+#vectores
+heights &lt;- c(147.2, 153.5, 152.5, 162.0, 153.9)
+mean(heights)
+
+#subconjuntos
+y &lt;- LETTERS[1:10]
+y[3:7]
+```
+
+Si necesitas ayuda:
+  1. Pregúntale a R con la función `help()` o `?`, p.e.: `help(mean)` o `?mean`
+  2. Nos pasas la voz :)
+
+---
+class: inverse, center, middle
+
+# Variables
+
+&lt;!--
+- Enfatizar en los supuestos
+- Probabilidades, distribución normal, definición del estadístico z, valor p, 
+- ¿teorema del límite central? -&gt; error estandar -&gt; intervalo de confianza
+- distribución T student
+--&gt;
+
+---
+
+# Variables: Ejemplo
+
+**VEF = Volumen Expiratorio Forzado (mL/s)**
+
+**¿Existe una asociación entre VEF y edad, talla, etc?**
+
+**¿Cómo se ve afectado el VEF en las personas que fuman?**
+
+- base: `espirometria.dta`
+- exposición: `edad`, `talla`
+- desenlace: `vef`
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; caso &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; codigo &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; edad &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; vef &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; talla &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; sexo &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; fumar &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 301 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.708 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 57.0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 451 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.724 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 67.5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 501 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.720 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 54.5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 642 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.558 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 53.0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 901 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.895 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 57.0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1701 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.336 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 61.0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Variables numéricas
+
+
+```r
+espir %&gt;% 
+  select(edad,vef,talla) %&gt;% 
+* skim()
+```
+
+&lt;table class="table" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; type &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; variable &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; missing &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; complete &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; n &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; mean &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; sd &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p0 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p25 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p50 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p75 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p100 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; hist &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; edad &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 9.93 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2.95 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 12 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▂▅▇▇▅▂▁▁ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; talla &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 61.14 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 5.7 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 46 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 57 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 61.5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 65.5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 74 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▃▃▇▇▇▃▁ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; vef &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2.64 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.87 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.79 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1.98 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2.55 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3.12 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 5.79 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▆▇▆▃▂▁▁ &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Variables numéricas: PH
+
+.pull-left[
+
+
+```r
+espir %&gt;% 
+* ggplot(aes(x=talla,y=vef)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+]
+
+--
+
+.pull-right[
+
+
+```r
+espir %&gt;% 
+  select(edad,vef,talla) %&gt;% 
+* correlate() %&gt;%
+  rearrange() %&gt;% 
+  shave()
+```
+
+```
+## # A tibble: 3 x 4
+##   rowname   edad  talla   vef
+##   &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 edad    NA     NA        NA
+## 2 talla    0.792 NA        NA
+## 3 vef      0.756  0.868    NA
+```
+
+]
+
+---
+
+# Variables categóricas
+
+
+```r
+espir %&gt;% 
+* tabyl(sexo) %&gt;%
+  adorn_totals("row") %&gt;% 
+  adorn_pct_formatting()
+```
+
+```
+##    sexo   n percent
+##    male 336   51.4%
+##  female 318   48.6%
+##   Total 654  100.0%
+```
+
+--
+
+
+
+```r
+espir %&gt;% 
+* tabyl(sexo,fumar) %&gt;%
+  adorn_totals(c("col")) %&gt;% 
+  adorn_percentages() %&gt;% 
+  adorn_pct_formatting() %&gt;% 
+  adorn_ns(position = "front") %&gt;% 
+  adorn_title()
+```
+
+```
+##               fumar                        
+##    sexo          No         Si        Total
+##    male 310 (92.3%) 26  (7.7%) 336 (100.0%)
+##  female 279 (87.7%) 39 (12.3%) 318 (100.0%)
+```
+
+---
+
+# Variables categóricas: PH
+
+
+```r
+espir %&gt;% 
+  tabyl(sexo,fumar) %&gt;% 
+* chisq.test() %&gt;%
+  tidy()
+```
+
+```
+## # A tibble: 1 x 4
+##   statistic p.value parameter method                                       
+##       &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt; &lt;chr&gt;                                        
+## 1      3.25  0.0714         1 Pearson's Chi-squared test with Yates' conti~
+```
+
+---
+
+# Variables numéricas y categóricas
+
+.pull-left[
+
+
+```r
+espir %&gt;% 
+  ggplot(aes(x=fumar,y=vef)) +
+  geom_point(
+*   aes(color=fumar),
+*   position = "jitter") +
+* geom_boxplot(alpha=0)
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+]
+
+--
+
+.pull-right[
+
+
+```r
+espir %&gt;% 
+  ggplot(aes(x=fumar,y=vef)) +
+* geom_violin(aes(color=fumar))
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+# Variables numéricas y categóricas: PH
+
+
+```r
+espir %&gt;% 
+  select(fumar,vef) %&gt;% 
+* group_by(fumar) %&gt;%
+  skim()
+```
+
+&lt;table class="table" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; type &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; fumar &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; variable &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; missing &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; complete &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; n &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; mean &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; sd &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p0 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p25 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p50 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p75 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p100 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; hist &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; vef &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 589 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 589 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2.57 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.79 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1.92 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2.46 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3.05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 5.79 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▆▇▆▂▂▁▁ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Si &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; vef &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3.28 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.75 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1.69 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3.17 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3.75 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 4.87 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ▁▃▂▇▅▃▂▂ &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+
+```r
+t.test(vef ~ fumar, data = espir, var.equal=FALSE) %&gt;% 
+* tidy()
+```
+
+&lt;table class="table" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; parameter &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.high &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; alternative &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -0.71 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.57 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.28 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -7.15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 83.27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.91 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.51 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Welch Two Sample t-test &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; two.sided &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Práctica 2
+
+
+```r
+#importar base en formato DTA
+espir &lt;- read_dta("data-raw/espirometria.dta") %&gt;% as_factor()
+
+#generar resumen descriptivo
+espir %&gt;% skim()
+
+#grafica distribución
+espir %&gt;% 
+  ggplot(aes(vef)) +
+  geom_histogram()
+
+#realizar pruebas de hipótesis
+#experimenta y describe qué cambios genera cada uno de los argumentos?
+compareGroups(formula = fumar ~ edad + vef + talla + sexo,
+              data = espir, 
+              byrow=T,
+              method=c(vef=2)
+              ) %&gt;% 
+  createTable(show.all = T) %&gt;% 
+  export2xls("table/tab1.xls")
+```
+
+
+
+
+
+---
+
+# Comentario: Pruebas de hipótesis
+
+- __Limitante:__ 
+  - dicotomización de resultados en significativos y no significativos
+  - valor p da indicativo de _tamaño de efecto_, pero no lo cuantifica
+
+- __Alternativa&lt;sup&gt;1&lt;/sup&gt;:__
+
+&lt;img src="notrack/estimation_plot.PNG" width="100%" /&gt;
+
+.footnote[
+[1] [Moving beyond P values: data analysis with estimation graphics](https://www.nature.com/articles/s41592-019-0470-3.epdf?author_access_token=Euy6APITxsYA3huBKOFBvNRgN0jAjWel9jnR3ZoTv0Pr6zJiJ3AA5aH4989gOJS_dajtNr1Wt17D0fh-t4GFcvqwMYN03qb8C33na_UrCUcGrt-Z0J9aPL6TPSbOxIC-pbHWKUDo2XsUOr3hQmlRew%3D%3D)
+]
+
+---
+class: inverse, center, middle
+
+# Modelos lineales
+
+
+---
+
+# ¿**Por qué** usar una **regresión**?
+
+--
+
+&lt;img src="notrack/nmeth.3627-F1.jpg" width="90%" style="display: block; margin: auto;" /&gt;
+
+--
+
+
+- Porque:
+
+  - Fija una **variable independiente** o **exposición** y observa una respuesta en la **variable dependiente** o **desenlace**.
+
+  - Permite **explicar** el cambio promedio de un evento `\(Y\)` en base a cambios en `\(X\)`, usando coeficientes o medidas de asociación.
+
+  - Permite **predecir** la probabilidad asociada a un evento.
+  
+  - Permite **cuantificar** el tamaño del efecto de la comparación.
+
+
+---
+
+# Regresión Lineal Simple
+
+.pull-left[
+
+## características
+
+- **una** variable independiente (simple)
+- **una** variable dependiente (univariada)
+- ambas variables deben ser **numéricas**
+
+## objetivos
+
+- ajustar datos a una recta
+- interpretar medida de bondad de ajuste ( `\(R^2\)` ) y coeficientes
+- evaluar supuestos
+- visualizar el modelo
+
+
+]
+
+
+.pull-right[
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+
+`$$Y = \beta_0 + \beta_1 X_1 + \epsilon$$`
+
+]
+
+---
+
+# RLinS: Ejemplo 
+
+.pull-left[
+
+
+```r
+espir %&gt;% 
+* ggplot(aes(x=edad,y=vef)) +
+  geom_point()
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+
+]
+
+--
+
+.pull-right[
+
+- __Pregunta__
+
+  + **¿Existe una relación lineal entre edad y VEF?**
+  
+  + **¿En cuánto incrementa el VEF, por cada incremento en un año de edad?**
+
+]
+
+---
+
+# RLinS: Ejemplo 
+
+.pull-left[
+
+
+```r
+espir %&gt;% 
+  ggplot(aes(x=edad,y=vef)) +
+  geom_point()
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
+- __Pregunta__
+
+  + **¿Existe una relación lineal entre edad y VEF?**
+  
+  + **¿En cuánto incrementa el VEF, por cada incremento en un año de edad?**
+
+- __Evaluación de supuestos:__
+
+  + **#1** independencia de observaciones
+  
+  + **#2** linealidad
+
+]
+
+
+---
+
+# RLinS: residuales
+
+- Definición: Diferencia entre el _valor observado_ y el _valor predicho_ en el eje vertical.
+
+.pull-left[
+
+&lt;img src="notrack/Inkedlss01_LI.jpg" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;img src="notrack/Inkedlss02_LI.jpg" width="60%" style="display: block; margin: auto;" /&gt;
+
+]
+
+--
+
+.pull-right[
+
+&lt;img src="notrack/Inkedlss02_LI.jpg" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;img src="notrack/Inkedlss03_LI.jpg" width="60%" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+# RLinS: suma de mínimos cuadrados
+
+.pull-left[
+
+&lt;!--![fuente: `https://youtu.be/nk2CQITm_eo`](notrack/lss.png)--&gt;
+
+&lt;img src="notrack/lss.png" width="90%" /&gt;
+
+]
+
+--
+
+.pull-right[
+
+Cálculo de la **sumatoria del cuadrado de los residuales** hacia la media y la recta:
+
+$$ SSE(mean) = \sum (data - mean)^2 $$
+$$ SSE(fit) = \sum (data - fit)^2 $$
+
+]
+
+---
+
+# RLinS: suma de mínimos cuadrados
+
+.pull-left[
+
+&lt;!--![fuente: `https://youtu.be/nk2CQITm_eo`](notrack/lss.png)--&gt;
+
+&lt;img src="notrack/lss.png" width="90%" /&gt;
+
+]
+
+.pull-right[
+
+Cálculo de la **sumatoria del cuadrado de los residuales** hacia la media y la recta:
+
+$$ SSE(mean) = \sum (data - mean)^2 $$
+$$ SSE(fit) = \sum (data - fit)^2 $$
+
+$$ Var(x) = \frac{SSE(x)^2}{n} $$
+
+Medida de **bondad de ajuste**:
+
+$$ R^2 = \frac{Var(mean) - Var(fit)}{Var(mean)}  $$
+
+]
+
+---
+
+# RLinS: bondad de ajuste
+
+
+```r
+wm1 &lt;- lm(vef ~ edad, data = espir)
+
+wm1 %&gt;% 
+* glance()
+```
+
+
+```
+## # A tibble: 1 x 6
+##   r.squared adj.r.squared sigma statistic   p.value    df
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;
+## 1     0.572         0.572 0.568      872. 2.45e-122     2
+```
+
+**INTERPRETACIÓN**
+
+--
+
+- **edad** _explica_ el **57%** de la variabilidad de **VEF**
+
+- existe un **57%** _de reducción en_ la variabilidad de **VEF** al tomar en cuenta la **edad**
+
+
+---
+
+# RLinS: coeficientes
+
+
+```r
+wm1 %&gt;% tidy()
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)    0.432   0.0779       5.54 4.36e-  8
+## 2 edad           0.222   0.00752     29.5  2.45e-122
+```
+
+**INTERPRETACIÓN**
+
+--
+
+&lt;img src="notrack/logan-06.PNG" width="90%" /&gt;
+
+---
+
+# RLinS: coeficientes
+
+
+```r
+wm1 %&gt;% tidy()
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)    0.432   0.0779       5.54 4.36e-  8
+## 2 edad           0.222   0.00752     29.5  2.45e-122
+```
+
+```r
+*wm1 %&gt;% confint_tidy()
+```
+
+```
+## # A tibble: 2 x 2
+##   conf.low conf.high
+##      &lt;dbl&gt;     &lt;dbl&gt;
+## 1    0.279     0.585
+## 2    0.207     0.237
+```
+
+- `\(\beta_{edad}\)`: 
+- En la población, por cada incremento de **edad** en _una unidad_, el **VEF** en promedio _incrementa_ en 0.22 mL/s,
+- con un intervalo de confianza al 95% de 0.21 a 0.24 mL/s.
+- Este resultado es estadísticamente significativo con un valor **p &lt; 0.001**
+
+---
+
+# RLinS: supuesto **#3** normalidad residuales
+
+.pull-left[
+
+&lt;img src="notrack/Inkedlss03_LI.jpg" width="75%" /&gt;
+]
+
+.pull-right[
+
+&lt;img src="notrack/nmeth.3854-F2.jpg" width="100%" /&gt;
+
+]
+
+---
+
+# RLinS: supuesto **#3** normalidad residuales
+
+- generación de _dataframe_ con:
+  * `.fitted` : valor predicho de Y para valor de X ( `\(\hat Y\)` )
+  * `.resid` : valor crudo del residual ( `\(Y - \hat Y\)` )
+  * `.std.resid` : valor _estudiantizado_ del residual
+
+
+```r
+wm1 %&gt;% 
+* augment()
+```
+
+```
+## # A tibble: 654 x 9
+##      vef  edad .fitted .se.fit .resid    .hat .sigma   .cooksd .std.resid
+##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1  1.71     9    2.43  0.0233 -0.722 0.00168  0.567 0.00137       -1.27 
+##  2  1.72     8    2.21  0.0265 -0.484 0.00218  0.568 0.000797      -0.854
+##  3  1.72     7    1.99  0.0313 -0.266 0.00304  0.568 0.000335      -0.469
+##  4  1.56     9    2.43  0.0233 -0.872 0.00168  0.567 0.00199       -1.54 
+##  5  1.89     9    2.43  0.0233 -0.535 0.00168  0.568 0.000750      -0.944
+##  6  2.34     8    2.21  0.0265  0.128 0.00218  0.568 0.0000558      0.226
+##  7  1.92     6    1.76  0.0370  0.155 0.00424  0.568 0.000160       0.274
+##  8  1.41     6    1.76  0.0370 -0.349 0.00424  0.568 0.000808      -0.616
+##  9  1.99     8    2.21  0.0265 -0.221 0.00218  0.568 0.000166      -0.390
+## 10  1.94     9    2.43  0.0233 -0.488 0.00168  0.568 0.000624      -0.861
+## # ... with 644 more rows
+```
+
+
+---
+
+# RLinS: supuesto **#3** normalidad residuales
+
+.pull-left[
+
+
+```r
+wm1 %&gt;% 
+  augment() %&gt;% 
+* ggplot(aes(.std.resid)) +
+  geom_histogram()
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
+
+]
+
+--
+
+.pull-right[
+
+- **META:** puntos sobre la línea
+
+
+```r
+wm1 %&gt;% 
+  augment() %&gt;% 
+  ggplot(
+*   aes(sample=.std.resid)
+    ) + 
+* geom_qq() +
+* geom_qq_line()
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+# RLinS: supuesto **#4** homoscedasticidad
+
+
+&lt;img src="notrack/logan-07.PNG" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# RLinS: supuesto **#4** homoscedasticidad
+
+&lt;img src="notrack/nmeth.3854-F1.jpg" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# RLinS: supuesto **#4** homoscedasticidad
+
+- **META:** distribución idéntica a ambos lados de la línea
+
+
+```r
+wm1 %&gt;% 
+  augment() %&gt;% 
+  ggplot(aes(.fitted,.std.resid)) +
+  geom_point() +
+* geom_smooth() +
+  geom_hline(yintercept = c(0))
+```
+
+&lt;img src="00-biostat2019-slides_files/figure-html/unnamed-chunk-42-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# RLinS: ¿cómo se ve el modelo?
+
+$$ Y = \beta_0 + \beta_1 X_1 + \epsilon $$
+$$ VEF = 0.60 + 0.22 (edad) + \epsilon $$
+
+
+```r
+espir %&gt;% 
+  ggplot(aes(edad,vef)) +
+  geom_point() + 
+* geom_smooth(method = "lm")
+```
+
+&lt;img src="00-biostat2019-slides_files/figure-html/unnamed-chunk-43-1.png" style="display: block; margin: auto;" /&gt;
+
+&lt;!-- - ¿qué pasa si borramos `method = "lm"`? --&gt;
+
+---
+
+# RLinS: retroalimentación
+
+- `\(R^2\)` indica el porcentaje de _variabilidad_ del desenlace (var. dependiente) explicada por la exposición (var. independiente).
+
+- los **coeficientes** permiten __cuantificar__ el _tamaño del efecto_ de la exposición en el desenlace en base a un modelo estadístico.
+
+- los **supuestos** permiten evaluar qué tan adecuado es el ajuste de los datos al modelo.
+
+---
+
+# Práctica 3
+
+- **¿Existe una relación lineal entre talla y VEF?**
+
+
+```r
+espir %&gt;% 
+  ggplot(aes(x = talla,y = vef)) +
+  geom____()
+```
+
+- identificar coeficientes y `\(R^2\)`
+
+
+```r
+# recordar: y ~ x
+wm1 &lt;- lm(_____ ~ _____, data = _____)
+wm1 %&gt;% g_____
+wm1 %&gt;% t_____
+wm1 %&gt;% c_____
+```
+
+- evaluar supuestos: normalidad y homoscedasticidad
+
+
+```r
+wm1 %&gt;% augment() %&gt;% 
+  ggplot() + _____
+
+wm1 %&gt;% augment() %&gt;% 
+  ggplot(aes(.fitted,.std.resid)) + __________
+```
+
+
+---
+
+# Regresión Logística Simple
+
+.pull-left[
+
+## características
+
+- **una** variable independiente (simple)
+- **una** variable dependiente (univariada)
+- la variable _dependiente_ debe ser **categórica dicotómica**
+
+## objetivos
+
+- ajustar datos a una recta
+- interpretar coeficientes
+
+
+]
+
+
+.pull-right[
+
+&lt;img src="notrack/nmeth.3904-F23.jpg" width="100%" /&gt;
+
+`$$Y = \beta_0 + \beta_1 X_1 + \epsilon$$`
+
+]
+
+---
+
+# RlogS: Ecuación y coeficiente
+
+- `\(p\)` posee distribución _binomial_, linealizada `\([-\infty,\infty]\)` por la función _logit_
+
+`$$logit(p) = log(odds)  = log\left(\frac{p}{1-p}\right) \\ logit(p) = \beta_0 + \beta_1 X_1 + . . . + \beta_n X_n + \epsilon \enspace ; \enspace y \sim Binomial$$`
+
+--
+
+
+&lt;img src="00-biostat2019-slides_files/figure-html/unnamed-chunk-48-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# RlogS: Ecuación y coeficiente
+
+
+- `\(p\)` posee distribución _binomial_, linealizada `\([-\infty,\infty]\)` por la función _logit_
+
+`$$logit(p) = log(odds)  = log\left(\frac{p}{1-p}\right) \\ logit(p) = \beta_0 + \beta_1 X_1 + . . . + \beta_n X_n + \epsilon \enspace ; \enspace y \sim Binomial$$`
+
+- El valor exponenciado de los coeficientes se pueden interpretar como **Odds Ratio (OR)**
+
+`$$Y = \beta_0 + \beta_1 X_1 \\ \begin{cases} Y_{x=1} = log(odds_{x=1}) = \beta_0 + \beta_1(1) \\ Y_{x=0} = log(odds_{x=0}) = \beta_0 + \beta_1(0) \end{cases} \\ Y_{x=1} - Y_{x=0} = \beta_1 \\ log(odds_{x=1}) - log(odds_{x=0}) = \beta_1 \\ log \left(\frac{odds_{x=1}}{odds_{x=0}}\right)  = \beta_1 \\ OR = exp(\beta_1)$$`
+
+---
+
+# RlogS: Modelos Lineales Generalizados
+
+GLM ajusta modelos lineales de `\(g(y)\)` con covaribles `\(x\)`
+
+`$$g(Y) = \beta_0 + \sum_{n=1}^{n} \beta_n X_n \enspace , \enspace y \sim F$$`
+
+Donde: 
+
+- `\(F\)` es la familia de distribución
+- `\(g(\space)\)` es la función de enlace
+
+--
+
+&lt;img src="notrack/logan-05.PNG" width="100%" /&gt;
+
+
+---
+
+# GLM: máxima verosimilitud
+
+.pull-left[
+
+&lt;img src="notrack/nmeth.3904-F3_A.jpg" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+
+- La estimación de parámetros se da por un proceso de optimización llamado **máxima verosimilitud** (o _likelihood_).
+
+- un estimado por _máxima verosimilitud_ es aquel que maximiza la verosimilitud de obtener las actuales observaciones dado el modelo elegido.
+
+- estimación numérica mediante _proceso iterativo_ hasta la convergencia.
+
+
+]
+
+---
+
+# RlogS: Ejemplo
+
+**En personas VIH+, ¿el polimorfismo CCR5 está *asociado* con el desarrollo del SIDA?**
+
+- base: `aidsdb.dta`
+- exposición: `ccr5`
+- desenlace: `aids`
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; studyid &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; ttoaidsorexit &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; aids &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; age &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; race &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; loghivrna &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; cd4 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; ccr2 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; ccr5 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; sdf1 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 101750 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; race1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11.786481 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 434 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 101780 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2809 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; race2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.916421 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 391 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 103328 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1717 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 32 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; race1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.169676 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 819 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 104463 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2315 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; race1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.649203 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 763 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 104525 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3764 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; race1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.834726 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 520 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 107858 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2643 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; race1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.790097 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# RlogS: Interpretar variables categóricas 
+
+
+```r
+wm1 &lt;- glm(aids ~ ccr5, data = aidsdb, 
+*          family = binomial(link = "logit"))
+```
+
+
+```
+## # A tibble: 2 x 7
+##   term        log.or    se    or conf.low conf.high p.value
+##   &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 (Intercept) -0.487 0.106 0.614    0.499     0.754   0    
+## 2 ccr5Yes      0.151 0.245 1.16     0.715     1.87    0.539
+```
+
+**INTERPRETACIÓN**
+
+- `\(\beta_0\)`
+  - En la población, el **odds** de tener sida dado que **no poseen CCR5** es **0.61**,
+  - con un intervalo de confianza al 95% de 0.5 a 0.75.
+
+---
+
+# RlogS: Interpretar variables categóricas 
+
+
+```r
+wm1 &lt;- glm(aids ~ ccr5, data = aidsdb, 
+*          family = binomial(link = "logit"))
+```
+
+
+```
+## # A tibble: 2 x 7
+##   term        log.or    se    or conf.low conf.high p.value
+##   &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 (Intercept) -0.487 0.106 0.614    0.499     0.754   0    
+## 2 ccr5Yes      0.151 0.245 1.16     0.715     1.87    0.539
+```
+
+**INTERPRETACIÓN**
+
+- `\(\beta_{CCR2:Yes}\)`
+  - En la población, el **odds** de tener sida dado que **sí poseen CCR5** es
+  - **1.16** veces, 
+  - el **odds** de tener depresión dado que **no poseen CCR5**,
+  - con un intervalo de confianza al 95% de 0.72 a 1.87.
+  - Este resultado no es estadísticamente significativo con un valor **p = 0.539**
+
+
+
+---
+
+# RlogS: Interpretar variables contínuas 
+
+
+```r
+wm1 &lt;- glm(aids ~ loghivrna, data = aidsdb, 
+           family = binomial(link = "logit"))
+```
+
+
+```
+## # A tibble: 2 x 7
+##   term        log.or     se     or conf.low conf.high p.value
+##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 (Intercept) -2.52  0.593  0.0808   0.0246     0.252 0.00002
+## 2 loghivrna    0.216 0.0575 1.24     1.11       1.39  0.00017
+```
+
+**INTERPRETACIÓN**
+
+- `\(\beta_{loghivrna}\)`
+  - En la población, por cada incremento en una unidad del **log de RNA viral**,
+  - el **odds** de sida _cambia_ en **1.24**, con un intervalo de confianza al 95% de 1.11 a 1.39.
+  - Este resultado es estadísticamente significativo con un valor **p &lt; 0.001**
+ 
+
+
+---
+
+# Práctica 4
+
+- **¿Qué otros marcadores están asociados con el desarrollo de SIDA?**
+
+- **Intenta ajustar por otras covariables como edad, raza o sexo**
+
+
+```r
+# recordar: y ~ x
+wm1 &lt;- glm(_____ ~ _____, data=_____, family= _____(link="_____"))
+
+wm1 %&gt;% g_____
+wm1 %&gt;% t_____
+wm1 %&gt;% c_____
+wm1 %&gt;% a_____
+
+wm1 %&gt;% avallecam::epi_tidymodel_or()
+```
+
+---
+
+# Relación con Prueba de Hipótesis
+
+&lt;img src="notrack/linear_tests_cheat_sheet.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+[1] [Jonas Kristoffer Lindeløv](https://lindeloev.github.io/tests-as-linear/)
+]
+
+---
+class: inverse, center, middle
+
+# Comparaciones múltiples
+
+
+---
+
+# Problema: _multiple hypothesis testing_
+
+- Cuando monitoreamos un gran número de resultados experimentales, esperamos observar descubrimientos que ocurren al azar.
+
+- Los métodos desarrollados para ajustar o reinterpretar los valores p son llamados _métodos de corrección por múltiples comparaciones_.
+
+- p.e.: experimentos ómicos:
+
+&lt;img src="notrack/nmeth.2900-F1.jpg" width="75%" style="display: block; margin: auto;" /&gt;
+
+---
+
+background-image: url(notrack/statquest-3.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-6.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-7.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-10.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-12.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-13.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+# Método Benjamini Hochberg
+
+1. ordenar ascendentemente y rankear valores p
+2. el mayor valor p tiene el mismo valor de p ajustado
+3. el siguiente es el menor entre: (i) el previo o (ii) la solución:
+
+.pull-left[
+
+`$$p_{adjusted} = p_{value} * \left(\frac{N_{p_{value}}}{rank_{p_{value}}}\right)$$`
+
+
+```r
+*tibble(
+  p=seq(from = 0.01,
+        to = 0.91,
+        by = 0.1),
+  r=1:10)
+```
+
+]
+
+--
+
+.pull-right[
+
+
+```
+## # A tibble: 10 x 2
+##        p     r
+##    &lt;dbl&gt; &lt;int&gt;
+##  1  0.01     1
+##  2  0.11     2
+##  3  0.21     3
+##  4  0.31     4
+##  5  0.41     5
+##  6  0.51     6
+##  7  0.61     7
+##  8  0.71     8
+##  9  0.81     9
+## 10  0.91    10
+```
+
+]
+
+---
+
+# Método Benjamini Hochberg
+
+1. ordenar ascendentemente y rankear valores p
+2. el mayor valor p tiene el mismo valor de p ajustado
+3. el siguiente es el menor entre: (i) el previo o (ii) la solución:
+
+.pull-left[
+
+`$$p_{adjusted} = p_{value} * \left(\frac{N_{p_{value}}}{rank_{p_{value}}}\right)$$`
+
+
+```r
+tibble(
+  p=seq(from = 0.01,
+        to = 0.91,
+        by = 0.1),
+  r=1:10) %&gt;% 
+* mutate(
+*   p.adjust=
+*     p.adjust(
+*       p = p,
+*       method = "BH"))
+```
+
+]
+
+.pull-right[
+
+
+```
+## # A tibble: 10 x 2
+##        p     r
+##    &lt;dbl&gt; &lt;int&gt;
+##  1  0.01     1
+##  2  0.11     2
+##  3  0.21     3
+##  4  0.31     4
+##  5  0.41     5
+##  6  0.51     6
+##  7  0.61     7
+##  8  0.71     8
+##  9  0.81     9
+## 10  0.91    10
+```
+
+]
+
+
+---
+
+# Método Benjamini Hochberg
+
+1. ordenar ascendentemente y rankear valores p
+2. el mayor valor p tiene el mismo valor de p ajustado
+3. el siguiente es el menor entre: (i) el previo o (ii) la solución:
+
+.pull-left[
+
+`$$p_{adjusted} = p_{value} * \left(\frac{N_{p_{value}}}{rank_{p_{value}}}\right)$$`
+
+
+```r
+tibble(
+  p=seq(from = 0.01,
+        to = 0.91,
+        by = 0.1),
+  r=1:10) %&gt;% 
+* mutate(
+*   p.adjust=
+*     p.adjust(
+*       p = p,
+*       method = "BH"))
+```
+
+]
+
+.pull-right[
+
+
+```
+## # A tibble: 10 x 3
+##        p     r p.adjust
+##    &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt;
+##  1  0.01     1    0.1  
+##  2  0.11     2    0.55 
+##  3  0.21     3    0.7  
+##  4  0.31     4    0.775
+##  5  0.41     5    0.82 
+##  6  0.51     6    0.85 
+##  7  0.61     7    0.871
+##  8  0.71     8    0.888
+##  9  0.81     9    0.9  
+## 10  0.91    10    0.91
+```
+
+]
+
+---
+
+background-image: url(notrack/statquest-14.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-15.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+background-image: url(notrack/statquest-16.png)
+background-size: contain
+.footnote[
+Stamer J. [StatQuest](https://www.youtube.com/user/joshstarmer/playlists)
+]
+
+---
+
+# Ejemplo: método BH
+
+
+```r
+multpv %&gt;% 
+  ggplot(aes(p.value)) + 
+  geom_histogram(binwidth=.05) +
+* facet_wrap(~ type, scale="free_y", nrow=2) +
+  labs(x="P-values")
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-69-1.png)&lt;!-- --&gt;
+
+---
+
+# Ejemplo: método BH
+
+
+```r
+multpv %&gt;% 
+* group_by(type) %&gt;%
+* mutate(p.adjust=p.adjust(p = p.value,method = "BH"),
+         p.adjust_pass=if_else(p.adjust&lt;0.05,"TRUE","FALSE")) %&gt;% 
+  ungroup() %&gt;% 
+  ggplot(aes(p.value,fill=p.adjust_pass)) + geom_histogram(binwidth=.05) +
+  facet_wrap(~ type, scale="free_y", nrow=2) +labs(x="P-values",fill="BH")
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-70-1.png)&lt;!-- --&gt;
+
+---
+
+# Aplicación: Microarray
+
+- Diseño:
+  * Medición de la expresión en inanición (Brauer, 2008)
+  * Cultivos de _S. cerevisiae_ expuestos a seis concentraciones de nutrientes, suministrado en seis tasas o _rates_ por un quimiostato.
+  * Un _gene expression microarray_ mide qué tanto un gen se expresa en determinada condición.
+
+--
+
+
+```r
+cleaned_data &lt;- read_rds("data-raw/microarraydata.rds")
+```
+
+.pull-left[
+
+
+```r
+cleaned_data %&gt;% 
+* count(nutrient)
+```
+
+```
+## # A tibble: 6 x 2
+##   nutrient      n
+##   &lt;chr&gt;     &lt;int&gt;
+## 1 Ammonia   33141
+## 2 Glucose   33138
+## 3 Leucine   33178
+## 4 Phosphate 33068
+## 5 Sulfate   32897
+## 6 Uracil    33008
+```
+
+]
+
+.pull-right[
+
+
+```r
+cleaned_data %&gt;% 
+* count(rate)
+```
+
+```
+## # A tibble: 6 x 2
+##    rate     n
+##   &lt;dbl&gt; &lt;int&gt;
+## 1  0.05 32741
+## 2  0.1  33132
+## 3  0.15 33145
+## 4  0.2  33121
+## 5  0.25 33177
+## 6  0.3  33114
+```
+
+]
+
+
+
+---
+
+# Microarray: visualización
+
+
+```r
+cleaned_data %&gt;%
+* filter(BP == "leucine biosynthesis") %&gt;%
+  plot_expression_data() #función detallada en: practica-05.R
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-75-1.png)&lt;!-- --&gt;
+
+---
+
+# Microarray: visualización
+
+
+```r
+cleaned_data %&gt;%
+  filter(BP == "cell wall organization and biogenesis") %&gt;%
+  plot_expression_data()
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-76-1.png)&lt;!-- --&gt;
+
+---
+
+# Microarray: Regresión Lineal Simple
+
+
+```r
+cleaned_data %&gt;%
+  #elegimos 01 gen y 01 nutriente
+  filter(name == "LEU1", nutrient == "Leucine") %&gt;% 
+  #graficamos la relación Y: expresión ~ X: rate
+  ggplot(aes(rate, expression)) +
+  #empleamos la geometría punto
+  geom_point()
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-77-1.png)&lt;!-- --&gt;
+
+---
+
+# Microarray: Regresión Lineal Simple
+
+
+```r
+cleaned_data %&gt;%
+  #elegimos 01 gen y 01 nutriente
+  filter(name == "LEU1", nutrient == "Leucine") %&gt;% 
+  #graficamos la relación Y: expresión ~ X: rate
+  ggplot(aes(rate, expression)) +
+  #empleamos la geometría punto
+  geom_point() + geom_smooth(method = "lm")
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-78-1.png)&lt;!-- --&gt;
+
+
+---
+
+# Microarray: Regresión Lineal Simple
+
+
+```r
+cleaned_data %&gt;%
+  #elegimos 01 gen y 01 nutriente
+  filter(name == "LEU1", nutrient == "Leucine") %&gt;% 
+  #ajustamos una regresión lineal
+  #dado que data no es el primer argumento
+  #necesitamos especificarlo en data con "."
+  lm(expression ~ rate, data = .) %&gt;% 
+  #visualizamos tabla con estimados
+  tidy()
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)     4.62     0.348     13.3  0.000186
+## 2 rate          -11.0      1.79      -6.14 0.00356
+```
+
+---
+
+# Microarray: a todas los pares gen-nutriente
+
+
+```r
+linear_models &lt;- cleaned_data %&gt;%
+* filter(nutrient=="Ammonia") %&gt;% #filtramos por nutriente
+  group_by(name, systematic_name, nutrient) %&gt;% #agrupamos por gen
+* nest() %&gt;% #anidamos los datos en una columna lista de df
+  # ajustamos un modelo lineal a cada fila -ver paquete purrr::map-
+* mutate(model = map(data, ~ lm(expression ~ rate, data = .x)),
+*        tidym = map(model,tidy))
+```
+
+--
+
+
+```r
+linear_models
+```
+
+```
+## # A tibble: 5,536 x 6
+## # Groups:   name, systematic_name, nutrient [5,536]
+##    name  systematic_name nutrient           data model  tidym           
+##    &lt;chr&gt; &lt;chr&gt;           &lt;chr&gt;    &lt;list&lt;df[,4]&gt;&gt; &lt;list&gt; &lt;list&gt;          
+##  1 SFB2  YNL049C         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  2 ""    YNL095C         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  3 QRI7  YDL104C         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  4 CFT2  YLR115W         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  5 SSO2  YMR183C         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  6 PSP2  YML017W         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  7 RIB2  YOL066C         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  8 VMA13 YPR036W         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  9 EDC3  YEL015W         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+## 10 VPS5  YOR069W         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+## # ... with 5,526 more rows
+```
+
+
+---
+
+# Microarray: conservamos las pendientes
+
+
+```r
+slope_terms &lt;- linear_models %&gt;% 
+* unnest(cols = c(tidym)) %&gt;%
+  ungroup() %&gt;% 
+  filter(term=="rate" &amp; !is.na(p.value)) 
+
+slope_terms %&gt;% 
+  ggplot(aes(p.value)) +
+  geom_histogram(binwidth = .01) +
+  facet_wrap(~nutrient)
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-82-1.png)&lt;!-- --&gt;
+
+---
+
+# Microarray: corregimos valor p
+
+
+```r
+slope_terms_adj &lt;- slope_terms %&gt;% 
+* mutate(q.value = qvalue(p.value)$qvalues,
+         q.value_pass=if_else(q.value &lt; .01,"TRUE","FALSE")) 
+
+slope_terms_adj %&gt;% 
+  ggplot(aes(p.value,
+*            fill=q.value_pass)) +
+  geom_histogram(binwidth = .01) +
+  facet_wrap(~nutrient)
+```
+
+![](00-biostat2019-slides_files/figure-html/unnamed-chunk-83-1.png)&lt;!-- --&gt;
+
+---
+
+# Microarray: Lista de genes de interés
+
+
+```r
+slope_terms_adj %&gt;% 
+  filter(q.value_pass=="TRUE") %&gt;% 
+* arrange(q.value) %&gt;%
+  select(systematic_name,nutrient,term,estimate,p.value,q.value)
+```
+
+```
+## # A tibble: 585 x 6
+##    systematic_name nutrient term  estimate     p.value  q.value
+##    &lt;chr&gt;           &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;
+##  1 YBR291C         Ammonia  rate     11.6  0.000000582 0.000951
+##  2 YLR174W         Ammonia  rate    -14.0  0.00000162  0.00132 
+##  3 YLL003W         Ammonia  rate     -4.22 0.00000346  0.00189 
+##  4 YMR053C         Ammonia  rate     -7.25 0.00000656  0.00268 
+##  5 YEL001C         Ammonia  rate      6.61 0.0000155   0.00276 
+##  6 YHR068W         Ammonia  rate     10.0  0.0000166   0.00276 
+##  7 YDR069C         Ammonia  rate     -4.49 0.00000939  0.00276 
+##  8 YML128C         Ammonia  rate    -15.0  0.0000169   0.00276 
+##  9 YPR049C         Ammonia  rate     -5.90 0.0000128   0.00276 
+## 10 YGR244C         Ammonia  rate     -5.44 0.0000135   0.00276 
+## # ... with 575 more rows
+```
+
+---
+
+# Práctica 5
+
+- reproducir el proceso para los demás nutrientes
+
+- explorar paquete `limma`
+
+- explorar la documentación del paquete `qvalue` [link](https://github.com/StoreyLab/qvalue)
+
+
+```r
+library(qvalue)
+
+#datos microarray
+qmicro &lt;- qvalue(p = slope_terms$p.value)
+summary(qmicro)
+hist(qmicro)
+plot(qmicro)
+```
+
+
+---
+
+# Referencias
+
+- Logan M. (2011). Biostatistical design and analysis using R: a practical guide. John Wiley &amp; Sons. [Library Genesis](http://gen.lib.rus.ec/book/index.php?md5=9CF463AE32C405E29FCEDD99440225BE)
+- Akehurst H. (2016) Bioestadística con R. Curso dictado en UPCH.
+- Statistics for Biologist: Points of Significance. [Nature Collection](https://www.nature.com/collections/qghhqm/pointsofsignificance)
+- Ho J, et al. (2019). Moving beyond P values: data analysis with estimation graphics. [Nature Methods](https://www.nature.com/articles/s41592-019-0470-3.epdf?author_access_token=Euy6APITxsYA3huBKOFBvNRgN0jAjWel9jnR3ZoTv0Pr6zJiJ3AA5aH4989gOJS_dajtNr1Wt17D0fh-t4GFcvqwMYN03qb8C33na_UrCUcGrt-Z0J9aPL6TPSbOxIC-pbHWKUDo2XsUOr3hQmlRew%3D%3D)
+- Stamer J. StatQuest. False Discovery Rates, FDR, clearly explained. [YouTube channel](https://www.youtube.com/user/joshstarmer/playlists)
+- Ding J, et al. (2018). Association of gene polymorphism of SDF1(CXCR12) with susceptibility to HIV-1 infection and AIDS disease progression: A meta-analysis. [PLoS One](https://www.ncbi.nlm.nih.gov/pubmed/29420545)
+- Estrada-Aguirre JA, et al. (2013). Protective effect of CCR5 Delta-32 allele against HIV-1 in Mexican women. [Curr HIV Res](https://www.ncbi.nlm.nih.gov/pubmed/24382026)
+- Lindeløv J. (2019) Common statistical tests are linear models (or: how to teach stats) [Github personal webpage](https://lindeloev.github.io/tests-as-linear/)
+- Robinson D. (2014). Modeling gene expression with broom: a case study in tidy analysis. [Variance explained blog](http://varianceexplained.org/r/tidy-genomics-broom/)
+
+---
+
+# Material complementario
+
+- Rstudio Education: [Learn](https://education.rstudio.com/learn/)
+  * beginner, intermediate, expert tracks
+  * transform table [here](https://rstudio-education.github.io/tidyverse-cookbook/transform-tables.html)
+  * tidy explain *_join verbs [here](https://www.garrickadenbuie.com/project/tidyexplain/)
+
+- Rstudio [Cheat sheets](https://rstudio.com/resources/cheatsheets/)
+  * data import
+  * data transformation
+  * data visualization
+
+---
+
+class: center, middle
+
+# ¡Gracias!
+
+## Andree Valle Campos&lt;br/&gt;&lt;br/&gt; <i class="fab  fa-twitter "></i> <i class="fab  fa-github "></i> __`@avallecam`__ &lt;br/&gt;&lt;br/&gt; <i class="fas  fa-inbox "></i> __avallecam@gmail.com__
+
+.footnote[
+Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+]
+
+---
+
+class: center, middle
+
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/3/39/Naruto_Shiki_Fujin.svg)
+background-size: contain
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
