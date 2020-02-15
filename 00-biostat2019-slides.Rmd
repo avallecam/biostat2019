@@ -86,7 +86,7 @@ multpv <- read_rds("data-raw/createpval.rds")
 
 --
 
-- Contenido disponible en __https://github.com/avallecam/biostat2019__
+- Contenido disponible en __https://avallecam.github.io/biostat2019/__
 
 ---
 
@@ -107,8 +107,11 @@ class: center, middle
 
 __Ir a__ 
 
-__`01-biostat2019-slides.pdf`__
+__`parte 02`__
 
+[click aquí](https://github.com/avallecam/biostat2019/blob/master/01-biostat2019-slides.pdf)
+
+(luego retornar)
 
 ---
 
