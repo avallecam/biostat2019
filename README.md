@@ -1,5 +1,11 @@
 # Estadística Inferencial en R
 
+
+
+[![DOI](https://zenodo.org/badge/219005053.svg)](https://zenodo.org/badge/latestdoi/219005053)
+
+
+
 -------
 
 ## Slides aquí [parte 01](https://avallecam.github.io/biostat2019/00-biostat2019-slides.html) y [parte 02](https://speakerdeck.com/avallecam/01-biostat2019-slides)
