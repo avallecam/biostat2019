@@ -3,7 +3,7 @@ title: "Estadística Inferencial en R"
 subtitle: "Día 1 del curso:<br/>Análisis de RNA-seq en R"
 author: "Andree Valle Campos<br/> @avallecam"
 institute: "CDC - Perú<br/>Centro Nacional de Epidemiología,<br/>Prevención y Control de Enfermedades"
-date: "`r Sys.Date()`"
+date: "2019-02-15"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -109,7 +109,7 @@ __Ir a__
 
 __`parte 02`__
 
-[click aquí](https://drive.google.com/file/d/1eYpsI9wNiIWYfYYikJLTJa6gka1P40hJ/view?usp=sharing)
+[click aquí](https://speakerdeck.com/avallecam/01-biostat2019-slides)
 
 (luego retornar)
 
@@ -936,7 +936,7 @@ wm1 <- glm(aids ~ ccr5, data = aidsdb,
 
 ```{r,echo=FALSE}
 #wm1 %>% glance()
-m1 <- avallecam::epi_tidymodel_or(wm1) %>% print()
+m1 <- epitidy::epi_tidymodel_or(wm1) %>% print()
 ```
 
 **INTERPRETACIÓN**
@@ -956,7 +956,7 @@ wm1 <- glm(aids ~ ccr5, data = aidsdb,
 
 ```{r,echo=FALSE}
 #wm1 %>% glance()
-m1 <- avallecam::epi_tidymodel_or(wm1) %>% print()
+m1 <- epitidy::epi_tidymodel_or(wm1) %>% print()
 ```
 
 **INTERPRETACIÓN**
@@ -984,7 +984,7 @@ wm1 <- glm(aids ~ loghivrna, data = aidsdb,
 
 ```{r,echo=FALSE}
 #wm1 %>% glance()
-m1 <- avallecam::epi_tidymodel_or(wm1) %>% print()
+m1 <- epitidy::epi_tidymodel_or(wm1) %>% print()
 ```
 
 **INTERPRETACIÓN**
@@ -1016,7 +1016,7 @@ wm1 %>% t_____
 wm1 %>% c_____
 wm1 %>% a_____
 
-wm1 %>% avallecam::epi_tidymodel_or()
+wm1 %>% epitidy::epi_tidymodel_or()
 ```
 
 ---
@@ -1479,7 +1479,7 @@ class: center, middle
 
 # ¡Gracias!
 
-## Andree Valle Campos<br/><br/> `r icon::fa('twitter')` `r icon::fa('github')` __`@avallecam`__ <br/><br/> `r icon::fa("inbox")` __avallecam@gmail.com__
+## Andree Valle Campos<br/><br/> `r icons::fontawesome$brands$twitter` `r icons::fontawesome$brands$github` __`@avallecam`__ <br/><br/> `r icons::fontawesome$solid$inbox` __avallecam@gmail.com__
 
 .footnote[
 Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).

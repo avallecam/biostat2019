@@ -2,7 +2,7 @@
 
 -------
 
-## Slides aquí [parte 01](https://avallecam.github.io/biostat2019/00-biostat2019-slides.html) y [parte 02](https://drive.google.com/file/d/1eYpsI9wNiIWYfYYikJLTJa6gka1P40hJ/view?usp=sharing)
+## Slides aquí [parte 01](https://avallecam.github.io/biostat2019/00-biostat2019-slides.html) y [parte 02](https://speakerdeck.com/avallecam/01-biostat2019-slides)
 
 -------
 

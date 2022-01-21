@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>Estadística Inferencial en R</title>
     <meta charset="utf-8" />
     <meta name="author" content="Andree Valle Campos  @avallecam" />
-    <meta name="date" content="2020-02-15" />
+    <meta name="date" content="2019-02-15" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
     <script src="libs/kePrint/kePrint.js"></script>
-    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
@@ -18,7 +19,7 @@ class: center, middle, inverse, title-slide
 ## Día 1 del curso:<br/>Análisis de RNA-seq en R
 ### Andree Valle Campos<br/> <span class="citation">@avallecam</span>
 ### CDC - Perú<br/>Centro Nacional de Epidemiología,<br/>Prevención y Control de Enfermedades
-### 2020-02-15
+### 2019-02-15
 
 ---
 
@@ -89,7 +90,7 @@ __Ir a__
 
 __`parte 02`__
 
-[click aquí](https://drive.google.com/file/d/1eYpsI9wNiIWYfYYikJLTJa6gka1P40hJ/view?usp=sharing)
+[click aquí](https://speakerdeck.com/avallecam/01-biostat2019-slides)
 
 (luego retornar)
 
@@ -231,66 +232,62 @@ espir %&gt;%
 &lt;table class="table" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
   &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; type &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; variable &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; missing &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; complete &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; n &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; mean &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; sd &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p0 &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p25 &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p50 &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p75 &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p100 &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; hist &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; skim_type &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; skim_variable &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n_missing &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; complete_rate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.sd &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.p0 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.p25 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.p50 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.p75 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.p100 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; numeric.hist &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; edad &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 0 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 9.93 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 2.95 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 8 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 12 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 19 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; ▂▅▇▇▅▂▁▁ &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; talla &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 0 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 61.14 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 5.7 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 46 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 57 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 61.5 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 65.5 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 74 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; ▁▃▃▇▇▇▃▁ &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.931193 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.9539352 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.0000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.0000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19.000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt;U+2582&amp;gt;&amp;lt;U+2587&amp;gt;&amp;lt;U+2587&amp;gt;&amp;lt;U+2583&amp;gt;&amp;lt;U+2581&amp;gt; &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; vef &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 0 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 654 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 2.64 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 0.87 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 0.79 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1.98 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 2.55 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 3.12 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 5.79 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; ▁▆▇▆▃▂▁▁ &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.636780 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8670591 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.791 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.981 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.5475 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.1185 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.793 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt;U+2583&amp;gt;&amp;lt;U+2587&amp;gt;&amp;lt;U+2586&amp;gt;&amp;lt;U+2582&amp;gt;&amp;lt;U+2581&amp;gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; talla &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 61.143578 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.7035128 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 46.000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 57.000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 61.5000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65.5000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 74.000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt;U+2582&amp;gt;&amp;lt;U+2585&amp;gt;&amp;lt;U+2587&amp;gt;&amp;lt;U+2587&amp;gt;&amp;lt;U+2582&amp;gt; &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -328,11 +325,11 @@ espir %&gt;%
 
 ```
 ## # A tibble: 3 x 4
-##   rowname   edad  talla   vef
-##   &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 edad    NA     NA        NA
-## 2 talla    0.792 NA        NA
-## 3 vef      0.756  0.868    NA
+##   term    edad  talla   vef
+##   &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 edad  NA     NA        NA
+## 2 talla  0.792 NA        NA
+## 3 vef    0.756  0.868    NA
 ```
 
 ]
@@ -391,9 +388,9 @@ espir %&gt;%
 
 ```
 ## # A tibble: 1 x 4
-##   statistic p.value parameter method                                       
-##       &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt; &lt;chr&gt;                                        
-## 1      3.25  0.0714         1 Pearson's Chi-squared test with Yates' conti~
+##   statistic p.value parameter method                                            
+##       &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt; &lt;chr&gt;                                             
+## 1      3.25  0.0714         1 Pearson's Chi-squared test with Yates' continuity~
 ```
 
 ---
@@ -446,54 +443,51 @@ espir %&gt;%
 &lt;table class="table" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
   &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; type &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; skim_type &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; skim_variable &lt;/th&gt;
    &lt;th style="text-align:left;"&gt; fumar &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; variable &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; missing &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; complete &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; n &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; mean &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; sd &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p0 &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p25 &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p50 &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p75 &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p100 &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; hist &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n_missing &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; complete_rate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.sd &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.p0 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.p25 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.p50 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.p75 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; numeric.p100 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; numeric.hist &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; vef &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 0 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 589 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 589 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 2.57 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 0.85 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 0.79 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1.92 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 2.46 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 3.05 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 5.79 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; ▁▆▇▆▂▂▁▁ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.566143 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8505215 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.791 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.920 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.465 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.048 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.793 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt;U+2583&amp;gt;&amp;lt;U+2587&amp;gt;&amp;lt;U+2585&amp;gt;&amp;lt;U+2582&amp;gt;&amp;lt;U+2581&amp;gt; &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Si &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; vef &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 0 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 65 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 65 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 3.28 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 0.75 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1.69 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 2.8 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 3.17 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 3.75 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 4.87 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; ▁▃▂▇▅▃▂▂ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Si &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.276861 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7499863 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.694 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.795 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.169 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.751 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.872 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt;U+2582&amp;gt;&amp;lt;U+2583&amp;gt;&amp;lt;U+2587&amp;gt;&amp;lt;U+2583&amp;gt;&amp;lt;U+2582&amp;gt; &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -797,8 +791,8 @@ wm1 %&gt;%
 ```
 ## # A tibble: 1 x 6
 ##   r.squared adj.r.squared sigma statistic   p.value    df
-##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;
-## 1     0.572         0.572 0.568      872. 2.45e-122     2
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
+## 1     0.572         0.572 0.568      872. 2.45e-122     1
 ```
 
 **INTERPRETACIÓN**
@@ -898,19 +892,19 @@ wm1 %&gt;%
 ```
 
 ```
-## # A tibble: 654 x 9
-##      vef  edad .fitted .se.fit .resid    .hat .sigma   .cooksd .std.resid
-##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-##  1  1.71     9    2.43  0.0233 -0.722 0.00168  0.567 0.00137       -1.27 
-##  2  1.72     8    2.21  0.0265 -0.484 0.00218  0.568 0.000797      -0.854
-##  3  1.72     7    1.99  0.0313 -0.266 0.00304  0.568 0.000335      -0.469
-##  4  1.56     9    2.43  0.0233 -0.872 0.00168  0.567 0.00199       -1.54 
-##  5  1.89     9    2.43  0.0233 -0.535 0.00168  0.568 0.000750      -0.944
-##  6  2.34     8    2.21  0.0265  0.128 0.00218  0.568 0.0000558      0.226
-##  7  1.92     6    1.76  0.0370  0.155 0.00424  0.568 0.000160       0.274
-##  8  1.41     6    1.76  0.0370 -0.349 0.00424  0.568 0.000808      -0.616
-##  9  1.99     8    2.21  0.0265 -0.221 0.00218  0.568 0.000166      -0.390
-## 10  1.94     9    2.43  0.0233 -0.488 0.00168  0.568 0.000624      -0.861
+## # A tibble: 654 x 8
+##      vef  edad .fitted .resid    .hat .sigma   .cooksd .std.resid
+##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1  1.71     9    2.43 -0.722 0.00168  0.567 0.00137       -1.27 
+##  2  1.72     8    2.21 -0.484 0.00218  0.568 0.000797      -0.854
+##  3  1.72     7    1.99 -0.266 0.00304  0.568 0.000335      -0.469
+##  4  1.56     9    2.43 -0.872 0.00168  0.567 0.00199       -1.54 
+##  5  1.89     9    2.43 -0.535 0.00168  0.568 0.000750      -0.944
+##  6  2.34     8    2.21  0.128 0.00218  0.568 0.0000558      0.226
+##  7  1.92     6    1.76  0.155 0.00424  0.568 0.000160       0.274
+##  8  1.41     6    1.76 -0.349 0.00424  0.568 0.000808      -0.616
+##  9  1.99     8    2.21 -0.221 0.00218  0.568 0.000166      -0.390
+## 10  1.94     9    2.43 -0.488 0.00168  0.568 0.000624      -0.861
 ## # ... with 644 more rows
 ```
 
@@ -1260,15 +1254,15 @@ wm1 &lt;- glm(aids ~ ccr5, data = aidsdb,
 ## # A tibble: 2 x 7
 ##   term        log.or    se    or conf.low conf.high p.value
 ##   &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-## 1 (Intercept) -0.487 0.106 0.614    0.499     0.754   0    
-## 2 ccr5Yes      0.151 0.245 1.16     0.715     1.87    0.539
+## 1 (Intercept) -0.487 0.106 0.614   -0.696    -0.282   0    
+## 2 ccr5Yes      0.151 0.245 1.16    -0.335     0.628   0.539
 ```
 
 **INTERPRETACIÓN**
 
 - `\(\beta_0\)`
   - En la población, el **odds** de tener sida dado que **no poseen CCR5** es **0.61**,
-  - con un intervalo de confianza al 95% de 0.5 a 0.75.
+  - con un intervalo de confianza al 95% de -0.7 a -0.28.
 
 ---
 
@@ -1285,8 +1279,8 @@ wm1 &lt;- glm(aids ~ ccr5, data = aidsdb,
 ## # A tibble: 2 x 7
 ##   term        log.or    se    or conf.low conf.high p.value
 ##   &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-## 1 (Intercept) -0.487 0.106 0.614    0.499     0.754   0    
-## 2 ccr5Yes      0.151 0.245 1.16     0.715     1.87    0.539
+## 1 (Intercept) -0.487 0.106 0.614   -0.696    -0.282   0    
+## 2 ccr5Yes      0.151 0.245 1.16    -0.335     0.628   0.539
 ```
 
 **INTERPRETACIÓN**
@@ -1295,7 +1289,7 @@ wm1 &lt;- glm(aids ~ ccr5, data = aidsdb,
   - En la población, el **odds** de tener sida dado que **sí poseen CCR5** es
   - **1.16** veces, 
   - el **odds** de tener depresión dado que **no poseen CCR5**,
-  - con un intervalo de confianza al 95% de 0.72 a 1.87.
+  - con un intervalo de confianza al 95% de -0.34 a 0.63.
   - Este resultado no es estadísticamente significativo con un valor **p = 0.539**
 
 
@@ -1315,15 +1309,15 @@ wm1 &lt;- glm(aids ~ loghivrna, data = aidsdb,
 ## # A tibble: 2 x 7
 ##   term        log.or     se     or conf.low conf.high p.value
 ##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-## 1 (Intercept) -2.52  0.593  0.0808   0.0246     0.252 0.00002
-## 2 loghivrna    0.216 0.0575 1.24     1.11       1.39  0.00017
+## 1 (Intercept) -2.52  0.593  0.0808   -3.71     -1.38  0.00002
+## 2 loghivrna    0.216 0.0575 1.24      0.106     0.331 0.00017
 ```
 
 **INTERPRETACIÓN**
 
 - `\(\beta_{loghivrna}\)`
   - En la población, por cada incremento en una unidad del **log de RNA viral**,
-  - el **odds** de sida _cambia_ en **1.24**, con un intervalo de confianza al 95% de 1.11 a 1.39.
+  - el **odds** de sida _cambia_ en **1.24**, con un intervalo de confianza al 95% de 0.11 a 0.33.
   - Este resultado es estadísticamente significativo con un valor **p &lt; 0.001**
  
 
@@ -1346,7 +1340,7 @@ wm1 %&gt;% t_____
 wm1 %&gt;% c_____
 wm1 %&gt;% a_____
 
-wm1 %&gt;% avallecam::epi_tidymodel_or()
+wm1 %&gt;% epitidy::epi_tidymodel_or()
 ```
 
 ---
@@ -1799,18 +1793,18 @@ linear_models
 ```
 ## # A tibble: 5,536 x 6
 ## # Groups:   name, systematic_name, nutrient [5,536]
-##    name  systematic_name nutrient           data model  tidym           
-##    &lt;chr&gt; &lt;chr&gt;           &lt;chr&gt;    &lt;list&lt;df[,4]&gt;&gt; &lt;list&gt; &lt;list&gt;          
-##  1 SFB2  YNL049C         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
-##  2 ""    YNL095C         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
-##  3 QRI7  YDL104C         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
-##  4 CFT2  YLR115W         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
-##  5 SSO2  YMR183C         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
-##  6 PSP2  YML017W         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
-##  7 RIB2  YOL066C         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
-##  8 VMA13 YPR036W         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
-##  9 EDC3  YEL015W         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
-## 10 VPS5  YOR069W         Ammonia         [6 x 4] &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##    name    systematic_name nutrient data             model  tidym           
+##    &lt;chr&gt;   &lt;chr&gt;           &lt;chr&gt;    &lt;list&gt;           &lt;list&gt; &lt;list&gt;          
+##  1 "SFB2"  YNL049C         Ammonia  &lt;tibble [6 x 4]&gt; &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  2 ""      YNL095C         Ammonia  &lt;tibble [6 x 4]&gt; &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  3 "QRI7"  YDL104C         Ammonia  &lt;tibble [6 x 4]&gt; &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  4 "CFT2"  YLR115W         Ammonia  &lt;tibble [6 x 4]&gt; &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  5 "SSO2"  YMR183C         Ammonia  &lt;tibble [6 x 4]&gt; &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  6 "PSP2"  YML017W         Ammonia  &lt;tibble [6 x 4]&gt; &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  7 "RIB2"  YOL066C         Ammonia  &lt;tibble [6 x 4]&gt; &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  8 "VMA13" YPR036W         Ammonia  &lt;tibble [6 x 4]&gt; &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+##  9 "EDC3"  YEL015W         Ammonia  &lt;tibble [6 x 4]&gt; &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
+## 10 "VPS5"  YOR069W         Ammonia  &lt;tibble [6 x 4]&gt; &lt;lm&gt;   &lt;tibble [2 x 5]&gt;
 ## # ... with 5,526 more rows
 ```
 
@@ -1938,7 +1932,7 @@ class: center, middle
 
 # ¡Gracias!
 
-## Andree Valle Campos&lt;br/&gt;&lt;br/&gt; <i class="fab  fa-twitter "></i> <i class="fab  fa-github "></i> __`@avallecam`__ &lt;br/&gt;&lt;br/&gt; <i class="fas  fa-inbox "></i> __avallecam@gmail.com__
+## Andree Valle Campos&lt;br/&gt;&lt;br/&gt; &lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"&gt;&lt;/path&gt;&lt;/svg&gt; &lt;svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"&gt;&lt;/path&gt;&lt;/svg&gt; __`@avallecam`__ &lt;br/&gt;&lt;br/&gt; &lt;svg viewBox="0 0 576 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M567.938 243.908L462.25 85.374A48.003 48.003 0 0 0 422.311 64H153.689a48 48 0 0 0-39.938 21.374L8.062 243.908A47.994 47.994 0 0 0 0 270.533V400c0 26.51 21.49 48 48 48h480c26.51 0 48-21.49 48-48V270.533a47.994 47.994 0 0 0-8.062-26.625zM162.252 128h251.497l85.333 128H376l-32 64H232l-32-64H76.918l85.334-128z"&gt;&lt;/path&gt;&lt;/svg&gt; __avallecam@gmail.com__
 
 .footnote[
 Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
@@ -1997,6 +1991,32 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
 // adds .remark-code-has-line-highlighted class to <pre> parent elements
 // of code chunks containing highlighted lines with class .remark-code-line-highlighted
 (function(d) {
@@ -2014,17 +2034,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   }
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
-
-<script>
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-</script>
 
 <script>
 slideshow._releaseMath = function(el) {
