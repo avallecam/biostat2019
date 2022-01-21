@@ -50,7 +50,7 @@
   
   * 5 practicas + solucionario 
 
-- Contenido disponible en __https://avallecam.github.io/biostat2019/__
+- Contenido disponible en __[https://avallecam.github.io/biostat2019/]()__
 
 
 ## to-do

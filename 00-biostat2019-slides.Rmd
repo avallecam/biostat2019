@@ -43,6 +43,11 @@ aidsdb <- read_dta("data-raw/aidsdb.dta") %>% as_factor() %>%
   mutate_if(.predicate = is.factor,.funs = fct_relevel,... = "No")
 espir <- read_dta("data-raw/espirometria.dta") %>% as_factor()
 multpv <- read_rds("data-raw/createpval.rds")
+
+# to solve skimr histograms charts
+# https://docs.ropensci.org/skimr/index.html#support-for-spark-histograms
+# fix_windows_histograms()
+Sys.setlocale("LC_CTYPE", "Chinese")
 ```
 
 # Temario
@@ -181,9 +186,14 @@ espir %>%
 ```
 
 ```{r,echo=FALSE,out.width = '50%'}
+# render = knitr::normal_print
+# fix_windows_histograms()
+# Sys.setlocale("LC_CTYPE", "Chinese")
 espir %>% 
   select(edad,vef,talla) %>% 
-  skim_to_wide() %>% 
+  skim() %>% 
+  yank(skim_type = "numeric") %>% 
+  select(-complete_rate) %>% 
   kable(format = "html") %>% 
   kable_styling(full_width = F,font_size = 15)
 ```
@@ -296,7 +306,9 @@ espir %>%
 espir %>% 
   select(fumar,vef) %>% 
   group_by(fumar) %>%  
-  skim_to_wide() %>% 
+  skim() %>%
+  yank(skim_type = "numeric") %>% 
+  select(-complete_rate) %>% 
   kable(format = "html") %>% 
   kable_styling(full_width = F,font_size = 15)
 ```
