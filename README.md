@@ -38,7 +38,7 @@
   * 2 archivos de teoría en PDF
   * 5 practicas + solucionario 
 
-- Contenido disponible en __[https://avallecam.github.io/biostat2019/]()__
+- Contenido disponible en __[https://avallecam.github.io/biostat2019/](https://avallecam.github.io/biostat2019/)__
 
 
 ## to-do
