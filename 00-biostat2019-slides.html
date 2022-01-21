@@ -831,15 +831,15 @@ wm1 %&gt;% tidy()
 ```
 
 ```r
-*wm1 %&gt;% confint_tidy()
+*wm1 %&gt;% tidy(conf.int=TRUE)
 ```
 
 ```
-## # A tibble: 2 x 2
-##   conf.low conf.high
-##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1    0.279     0.585
-## 2    0.207     0.237
+## # A tibble: 2 x 7
+##   term        estimate std.error statistic   p.value conf.low conf.high
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)    0.432   0.0779       5.54 4.36e-  8    0.279     0.585
+## 2 edad           0.222   0.00752     29.5  2.45e-122    0.207     0.237
 ```
 
 - `\(\beta_{edad}\)`: 

@@ -373,7 +373,7 @@ espir %>%
 t.test(vef ~ fumar, data = espir,var.equal=TRUE) %>% 
   tidy()
 lm(vef ~ 1+ fumar, data = espir) %>% tidy()
-lm(vef ~ 1+ fumar, data = espir) %>% confint_tidy()
+lm(vef ~ 1+ fumar, data = espir) %>% tidy(conf.int=TRUE)
 ```
 
 ---
@@ -647,7 +647,7 @@ knitr::include_graphics("notrack/logan-06.PNG")
 
 ```{r}
 wm1 %>% tidy()
-wm1 %>% confint_tidy() #<<
+wm1 %>% tidy(conf.int=TRUE) #<<
 ```
 
 - $\beta_{edad}$: 
